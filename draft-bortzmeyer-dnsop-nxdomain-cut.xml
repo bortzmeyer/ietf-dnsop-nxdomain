@@ -150,7 +150,8 @@ example.com.</t>
 </section>
 
 <section title="Acknowledgments">
-<t>Noone yet.</t>
+<t>The text of this document was mostly copied from <xref
+  target="I-D.vixie-dnsext-resimprove"/>, section 3.</t>
 </section>
 
 </middle>
