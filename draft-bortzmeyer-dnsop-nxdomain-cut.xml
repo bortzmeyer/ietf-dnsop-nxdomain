@@ -41,6 +41,11 @@
 <t>This document states clearly that when a DNS resolver receives a
 response with status code NXDOMAIN, it means that the name in the
 question section AND ALL THE NAMES UNDER IT do not exist.</t>
+<t>REMOVE BEFORE PUBLICATION: this document should be discussed in the
+IETF DNSOP (DNS Operations) group, through its mailing list. The
+source of the document, as well as a list of open issues, is currently
+kept on <eref
+target="https://github.com/bortzmeyer/ietf-dnsop-nxdomain">at Github</eref>.</t>
 </abstract>
 </front>
 
