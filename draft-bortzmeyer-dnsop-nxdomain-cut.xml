@@ -4,8 +4,6 @@
 <!ENTITY rfc1035 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1035.xml">
 <!ENTITY rfc2119 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
-<!ENTITY rfc2181 SYSTEM
-"http://xml.resource.org/public/rfc/bibxml/reference.RFC.2181.xml">
 <!ENTITY rfc4033 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4033.xml">
 <!ENTITY rfc4034 SYSTEM
@@ -27,7 +25,7 @@
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-dns-terminology">
 ]>
 
-<rfc docName="draft-bortzmeyer-dnsop-nxdomain-cut-00-BETA"
+<rfc docName="draft-bortzmeyer-dnsop-nxdomain-cut-00"
      category="std" ipr="trust200902">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -37,7 +35,7 @@
 <organization>AFNIC</organization>
 <address><postal><street>1, rue Stephenson</street><code>78180</code><city>Montigny-le-Bretonneux</city><country>France</country></postal> <phone>+33 1 39 30 83 46</phone><email>bortzmeyer+ietf@nic.fr</email><uri>http://www.afnic.fr/</uri></address>
 </author>
-<date month="TODO" year="2015"/>
+<date month="November" year="2015"/>
 <workgroup>Domain Name System Operations (dnsop) Working Group</workgroup>
 <abstract>
 <t>This document states clearly that when a DNS resolver receives a
@@ -52,29 +50,38 @@ question section AND ALL THE NAMES UNDER IT do not exist.</t>
     considered "proof" that there can be no child domains
     underneath. This is due to an ambiguity in <xref
     target="RFC1034"/> that failed to distinguish ENT (empty
-    nonterminal domain names, <xref target="I-D.ietf-dnsop-dns-terminology"/>) from nonexistent names.  For DNSSEC,
- the IETF had to distinguish this case (<xref target="RFC4034"/>, section 3.1.3.2), but the implication on non-DNSSEC resolvers wasn't fully realized.</t>
+    nonterminal domain names, <xref
+    target="I-D.ietf-dnsop-dns-terminology"/>) from nonexistent names.
+    For DNSSEC, the IETF had to distinguish this case (<xref
+    target="RFC4034"/>, section 3.1.3.2), but the implication on
+    non-DNSSEC resolvers wasn't fully realized.</t>
 <t>This document dictates that NXDOMAIN means NXDOMAIN for all child domains. Since the
 domain names are organized in a tree, it is a simple consequence of
 the tree structure: non-existence of a node implies non-existence of
 the entire sub-tree rooted at this node.</t>
+<section title="Requirements Terminology">
+<t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in <xref target="RFC2119"/>.</t>
 </section>
+  </section>
 
-<section title="Rules">
+<section anchor="rules" title="Rules">
 <t>When searching downward in its cache, an iterative caching DNS
 resolver SHOULD stop searching if it encounters a cached NXDOMAIN.
 The response to the triggering query should be NXDOMAIN.</t>
 <t>When an iterative caching DNS resolver stores an NXDOMAIN in its
  cache, all names and RRsets at or below that node SHOULD be deleted
 since they will have become unreachable.</t>
-<t>By implication, a stream of queries foo.example, bar.foo.example where
+<t>By implication, a stream of queries foo.example, then bar.foo.example, where
 foo.example does not exist would normally cause both queries to be
-forwarded to example's nameservers. Following this recommended practice,
+forwarded to example's nameservers. Following this recommended
+practice of "NXDOMAIN cut",
 the second query and indeed any other query for names at or below
 foo.example would not be forwarded.</t>
 </section>
 
-<section title="Benefits">
+<section anchor="benefits" title="Benefits">
   <t>The main benefit is a better efficiency of the caches. In the
   example above, we send only one query instead of two, the second one
   being answered from the cache.</t>
@@ -83,20 +90,42 @@ foo.example would not be forwarded.</t>
   minimisation <xref
   target="I-D.ietf-dnsop-qname-minimisation"/> since it will allow to
   stop searching as soon as a NXDOMAIN is encountered.</t>
-  <t>TODO help with random QNAME attacks TODO reference</t>
-  <t>TODO discussion of the SHOULD vs. MUST for the resolvers: some
+  <t>NXDOMAIN cut may also help with random QNAME attacks <xref
+  target="joost-dnsterror"/> <xref
+  target="balakrichenan-dafa888"/>. In these attacks, queries are sent
+  for a QNAME composed of a fixed suffix ("dafa888.wf" in one of the
+  articles above), which is typically nonexistent, and a random prefix, different for each request. A
+  resolver receiving these requests have to forward them to the
+  authoritative servers. With NXDOMAIN cut, we would just have to send
+  to the resolver a query for the fixed suffix, the resolver would get
+  a NXDOMAIN and then would stop forwarding the queries. (It would be
+  better if the SOA record in the NXDOMAIN response were sufficient to
+  find the non-existing domain but this is more delicate, see 
+  <xref target="future"/>.)</t>
+  <t>Since the principles set in this document are so great, why are
+  the rules of <xref target="rules"/> SHOULD and not MUST? This is
+  because some
   resolver may have a cache which is NOT organized as a tree (but, for
   instance, as a dictionary) and
   therefore have a good reason to ignore this.</t>
 </section>
 
 <section title="Possible issues">
-  <t>TODO Paul Wouters on isolated domains</t>
-<t>Today, we see broken authoritative name servers which reply to ENT
+  <t>Let's assume the TLD example exists but foobar.example is not
+  delegated (so the example's name servers will reply NXDOMAIN for a
+  query about anything.foobar.example). A system administrator decides
+  to name the internal machines of his organization under
+  office.foobar.example and use a trick of his resolver to forward
+  requests about this zone to his local authoritative name
+  servers. NXDOMAIN cut would create problems here, since, depending
+  on the order of requests to the resolver, it may have cached the
+  NXDOMAIN from example and therefore "deleted" everything under. This
+  document assumes that such setup is rare and does not need to be supported.</t>
+<t>Another issue that may happen: today, we see broken authoritative name servers which reply to ENT
 (<xref target="I-D.ietf-dnsop-dns-terminology"/>, section 6) with
 NXDOMAIN instead of the normal NODATA (<xref
 target="I-D.ietf-dnsop-dns-terminology"/>, section 3).</t>
-<t>RFC-EDITOR: REMOVES THE PARAGRAPH BEFORE PUBLICATION. An example today is
+<t>RFC-EDITOR: REMOVE THE PARAGRAPH BEFORE PUBLICATION. An example today is
 mta2._domainkey.cbs.nl (which exists) where querying _domainkey.cbs.nl
 yields NXDOMAIN. Another example is
 www.upenn.edu, redirected to www.upenn.edu-dscg.edgesuite.net while a
@@ -107,9 +136,18 @@ this behavior.
 </t>
 </section>
 
-<section title="Future work">
-  <t>TODO a word on deducing the non-existence of a node from the SOA
-  in the NXDOMAIN reply? Could help with random qnames attack</t>
+<section anchor="future" title="Future work">
+  <t>In this document, we deduce the non-existence of a domain only
+  for NXDOMAIN answers where the QNAME was this exact domain. If a
+  resolver sends a query to the name servers of the TLD example, and
+  asks the MX record for www.foobar.example, and receives a NXDOMAIN,
+  it can only register the fact that www.foobar.example (and
+  everything underneath) does not exist. Even if the accompanying SOA
+  record is for example only, it may be dangerous to infer that
+  foobar.example is nonexistent. TODO explain why.</t>
+<t>In the future, deducing the non-existence of a node from the SOA
+  in the NXDOMAIN reply may certainly help with random qnames attacks
+but this is out-of-scope for this document.</t>
 </section>
 
 <section title="IANA Considerations">
@@ -117,8 +155,15 @@ this behavior.
 </section>
 
 <section title="Security Considerations">
-<t>TODO mention random qnames attacks and how t stop them by
-"poisoning" the resolver with a NXDOMAIN for the apex</t>
+<t>The technique described here may help against a denial-of-service
+attack named "random qnames" and described in <xref
+target="benefits"/>. Apart from that, it is believed to have no
+security consequences.</t>
+<t>If a resolver does not validate the answers with DNSSEC, it can of
+course be poisoned with a false NXDOMAIN, thus "deleting" a part of
+the domain name tree. This denial-of-service attack is already
+possible with the rules of this document (but "NXDOMAIN cut" may
+increase its effects). The only solution is to use DNSSEC.</t>
 </section>
 
 <section title="Implementation status - RFC EDITOR: REMOVE BEFORE PUBLICATION">
@@ -141,7 +186,7 @@ the benefit of running code, which may serve as evidence of valuable
 experimentation and feedback that have made the implemented protocols
 more mature.  It is up to the individual working groups to use this
 information as they see fit".</t>
-<t>TODO As of today, all existing DNS resolvers are conservative: they
+<t>As of today, all existing DNS resolvers are conservative: they
 consider a NXDOMAIN as only significant for the name itself, not for
 the names under. All
 current recursive servers will upstream a query for out-of-cache
@@ -151,7 +196,8 @@ example.com.</t>
 
 <section title="Acknowledgments">
 <t>The text of this document was mostly copied from <xref
-  target="I-D.vixie-dnsext-resimprove"/>, section 3.</t>
+  target="I-D.vixie-dnsext-resimprove"/>, section 3. Thanks to its
+authors, Paul Vixie, Roland Joffe and Frederico Neves.</t>
 </section>
 
 </middle>
@@ -160,17 +206,35 @@ example.com.</t>
 
 <references title='Normative References'>
 &rfc1034;
-&rfc1035;
 &rfc2119;
-&rfc4034;
+&I-D.ietf-dnsop-dns-terminology; 
 </references>
 
 <references title='Informative References'>
-&rfc2181;
+&rfc4034;
 &rfc6982;
 &I-D.vixie-dnsext-resimprove;
-&I-D.ietf-dnsop-dns-terminology; 
 &I-D.ietf-dnsop-qname-minimisation;
+
+<reference anchor="joost-dnsterror" target="http://www.michael-joost.de/dnsterror.html">
+<front>
+<title>About DNS Attacks and ICMP Destination Unreachable Reports</title>
+<author fullname="Michael Joost" initials="M." surname="Joost"/>
+<date month="December" year="2014"/>
+</front>
+</reference>
+
+<reference anchor="balakrichenan-dafa888"
+	   target="https://indico.dns-oarc.net/event/20/session/3/contribution/37">
+  <front>
+    <title>Disturbance in the DNS - "Random qnames", the dafa888 DoS
+    attack"</title>
+    <author fullname="Sandoche Balakrichenan" initials="S."
+	    surname="Balakrichenan"/>
+    <date month="October" year="2014"/>
+    <abstract><t>At the DNS-OARC meeting in Los Angeles</t></abstract>
+  </front>
+</reference>
 
 </references>
 
