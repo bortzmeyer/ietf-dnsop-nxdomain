@@ -4,6 +4,8 @@
 <!ENTITY rfc1035 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1035.xml">
 <!ENTITY rfc2119 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY rfc2308 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.2308.xml">
 <!ENTITY rfc4033 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4033.xml">
 <!ENTITY rfc4034 SYSTEM
@@ -25,8 +27,8 @@
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-dns-terminology">
 ]>
 
-<rfc docName="draft-bortzmeyer-dnsop-nxdomain-cut-00"
-     category="std" ipr="trust200902">
+<rfc docName="draft-bortzmeyer-dnsop-nxdomain-cut-01BETA"
+     category="std" ipr="trust200902" updates="2308">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
 <front>
@@ -35,7 +37,7 @@
 <organization>AFNIC</organization>
 <address><postal><street>1, rue Stephenson</street><code>78180</code><city>Montigny-le-Bretonneux</city><country>France</country></postal> <phone>+33 1 39 30 83 46</phone><email>bortzmeyer+ietf@nic.fr</email><uri>http://www.afnic.fr/</uri></address>
 </author>
-<date month="November" year="2015"/>
+<date month="TODO" year="2015"/>
 <workgroup>Domain Name System Operations (dnsop) Working Group</workgroup>
 <abstract>
 <t>This document states clearly that when a DNS resolver receives a
@@ -77,13 +79,16 @@ resolver SHOULD stop searching if it encounters a cached NXDOMAIN.
 The response to the triggering query should be NXDOMAIN.</t>
 <t>When an iterative caching DNS resolver stores an NXDOMAIN in its
  cache, all names and RRsets at or below that node SHOULD be deleted
-since they will have become unreachable.</t>
+since they will have become unreachable. [TODO: currently under
+discussion, some people find it dangerous. MAY instead of SHOULD? Only
+if the NXDOMAIN is DNSSEC-validated? See <xref target="security"/>]</t>
 <t>By implication, a stream of queries foo.example, then bar.foo.example, where
 foo.example does not exist would normally cause both queries to be
 forwarded to example's nameservers. Following this recommended
 practice of "NXDOMAIN cut",
 the second query and indeed any other query for names at or below
 foo.example would not be forwarded.</t>
+<t>These rules replace the second paragraph of <xref target="RFC2308"/>.</t>
 </section>
 
 <section anchor="benefits" title="Benefits">
@@ -159,7 +164,7 @@ but this is out-of-scope for this document.</t>
 <t>This document has no actions for IANA.</t>
 </section>
 
-<section title="Security Considerations">
+<section anchor="security" title="Security Considerations">
 <t>The technique described here may help against a denial-of-service
 attack named "random qnames" and described in <xref
 target="benefits"/>. Apart from that, it is believed to have no
@@ -202,7 +207,7 @@ example.com.</t>
 <section title="Acknowledgments">
 <t>The text of this document was mostly copied from <xref
   target="I-D.vixie-dnsext-resimprove"/>, section 3. Thanks to its
-authors, Paul Vixie, Roland Joffe and Frederico Neves.</t>
+authors, Paul Vixie, Rodney Joffe and Frederico Neves.</t>
 </section>
 
 </middle>
@@ -216,6 +221,7 @@ authors, Paul Vixie, Roland Joffe and Frederico Neves.</t>
 </references>
 
 <references title='Informative References'>
+&rfc2308;
 &rfc4034;
 &rfc6982;
 &I-D.vixie-dnsext-resimprove;
