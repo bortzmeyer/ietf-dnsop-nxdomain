@@ -28,7 +28,7 @@
 ]>
 
 <rfc docName="draft-bortzmeyer-dnsop-nxdomain-cut-01BETA"
-     category="std" ipr="trust200902" updates="2308">
+     category="std" ipr="trust200902" updates="1034,2308">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
 <front>
@@ -81,7 +81,14 @@ The response to the triggering query should be NXDOMAIN.</t>
  cache, all names and RRsets at or below that node SHOULD be deleted
 since they will have become unreachable. [TODO: currently under
 discussion, some people find it dangerous. MAY instead of SHOULD? Only
-if the NXDOMAIN is DNSSEC-validated? See <xref target="security"/>]</t>
+if the NXDOMAIN is DNSSEC-validated? Perhaps the resolver could be configured to not "bulk delete"
+TLDs (or root). See <xref target="security"/>.]
+[TODO: currently under discussion, some people find it costly for the
+resolver. A large purge also
+causes the resolver to do a lot of (possibly CPU intensive) work, and
+could also affect the traffic levels between a recursive and authoritatives.
+Perhaps a cache may want to limit the number of nodes/records that it deletes
+per NXDOMAIN response.]</t>
 <t>By implication, a stream of queries foo.example, then bar.foo.example, where
 foo.example does not exist would normally cause both queries to be
 forwarded to example's nameservers. Following this recommended
