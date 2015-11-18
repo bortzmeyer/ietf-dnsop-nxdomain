@@ -176,7 +176,11 @@ this behavior.
 <t>In the future, deducing the non-existence of a node from the SOA
   in the NXDOMAIN reply may certainly help with random qnames attacks
 but this is out-of-scope for this document. It would require to address
-the problems mentioned in the previous paragraph.</t>
+the problems mentioned in the previous paragraph. A possible solution
+would be, when receiving a NXDOMAIN with a SOA which is more than one
+label up in the tree, to send requests for the domains which are between the
+QNAME and the owner name of the SOA. (A resolver which does DNSSEC
+validation or QNAME minimisation will need to do it, anyway.)</t>
 </section>
 
 <section title="IANA Considerations">
@@ -227,7 +231,7 @@ example.com.</t>
 <t>The text of this document was mostly copied from <xref
   target="I-D.vixie-dnsext-resimprove"/>, section 3. Thanks to its
 authors, Paul Vixie, Rodney Joffe and Frederico Neves.</t>
-<t>Thanks to Duane Wessels for fact checking and explanations.</t>
+<t>Thanks to Duane Wessels and Tony Finch for fact checking and explanations.</t>
 </section>
 
 </middle>
