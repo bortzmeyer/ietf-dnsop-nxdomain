@@ -95,7 +95,12 @@ forwarded to example's nameservers. Following this recommended
 practice of "NXDOMAIN cut",
 the second query and indeed any other query for names at or below
 foo.example would not be forwarded.</t>
-<t>These rules replace the second paragraph of <xref target="RFC2308"/>.</t>
+<t>These rules replace the second paragraph of section 5 of <xref
+target="RFC2308"/>. Otherwise,  <xref
+target="RFC2308"/> applies unchanged, and the fact that a subtree does
+not exist is not forever: the NXDOMAIN is cached only for the duration
+of the "negative TTL" (section 3 of xref
+target="RFC2308"/>).</t>
 </section>
 
 <section anchor="benefits" title="Benefits">
