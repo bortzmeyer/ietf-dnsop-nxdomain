@@ -160,11 +160,18 @@ this behavior.
   asks the MX record for www.foobar.example, and receives a NXDOMAIN,
   it can only register the fact that www.foobar.example (and
   everything underneath) does not exist. Even if the accompanying SOA
-  record is for example only, it may be dangerous to infer that
-  foobar.example is nonexistent. TODO explain why.</t>
+  record is for example only, one cannot infer that
+  foobar.example is nonexistent. The accompanying SOA indicates the
+  apex of the zone, not the closest existing domain name. REMOVE
+  BEFORE PUBLICATION: to use a real example today, ask the
+  authoritative name servers of the TLD fr about
+  anything.which.does.not.exist.gouv.fr. The SOA will indicate fr (the
+  apex) even while gouv.fr does exist (there is no zone cut between
+  gouv.fr and fr).</t>
 <t>In the future, deducing the non-existence of a node from the SOA
   in the NXDOMAIN reply may certainly help with random qnames attacks
-but this is out-of-scope for this document.</t>
+but this is out-of-scope for this document. It would require to address
+the problems mentioned in the previous paragraph.</t>
 </section>
 
 <section title="IANA Considerations">
@@ -215,6 +222,7 @@ example.com.</t>
 <t>The text of this document was mostly copied from <xref
   target="I-D.vixie-dnsext-resimprove"/>, section 3. Thanks to its
 authors, Paul Vixie, Rodney Joffe and Frederico Neves.</t>
+<t>Thanks to Duane Wessels for fact checking and explanations.</t>
 </section>
 
 </middle>
