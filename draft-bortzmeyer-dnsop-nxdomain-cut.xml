@@ -241,11 +241,11 @@ authors, Paul Vixie, Rodney Joffe and Frederico Neves.</t>
 <references title='Normative References'>
 &rfc1034;
 &rfc2119;
+&rfc2308;
 &I-D.ietf-dnsop-dns-terminology; 
 </references>
 
 <references title='Informative References'>
-&rfc2308;
 &rfc4035;
 &rfc6982;
 &I-D.vixie-dnsext-resimprove;
