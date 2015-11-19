@@ -8,8 +8,8 @@
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2308.xml">
 <!ENTITY rfc4033 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4033.xml">
-<!ENTITY rfc4034 SYSTEM
-"http://xml.resource.org/public/rfc/bibxml/reference.RFC.4034.xml">
+<!ENTITY rfc4035 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.4035.xml">
 <!ENTITY rfc5246 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5246.xml">
 <!ENTITY rfc5936 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5936.xml">
@@ -60,7 +60,7 @@ target="https://github.com/bortzmeyer/ietf-dnsop-nxdomain">at Github</eref>.</t>
     nonterminal domain names, <xref
     target="I-D.ietf-dnsop-dns-terminology"/>) from nonexistent names.
     For DNSSEC, the IETF had to distinguish this case (<xref
-    target="RFC4034"/>, section 3.1.3.2), but the implication on
+    target="RFC4035"/>, section 3.1.3.2), but the implication on
     non-DNSSEC resolvers wasn't fully realized.</t>
 <t>This document dictates that NXDOMAIN means NXDOMAIN for all child domains. Since the
 domain names are organized in a tree, it is a simple consequence of
@@ -246,7 +246,7 @@ authors, Paul Vixie, Rodney Joffe and Frederico Neves.</t>
 
 <references title='Informative References'>
 &rfc2308;
-&rfc4034;
+&rfc4035;
 &rfc6982;
 &I-D.vixie-dnsext-resimprove;
 &I-D.ietf-dnsop-qname-minimisation;
