@@ -37,6 +37,10 @@
 <organization>AFNIC</organization>
 <address><postal><street>1, rue Stephenson</street><code>78180</code><city>Montigny-le-Bretonneux</city><country>France</country></postal> <phone>+33 1 39 30 83 46</phone><email>bortzmeyer+ietf@nic.fr</email><uri>http://www.afnic.fr/</uri></address>
 </author>
+<author fullname="Shumo Huque" initials="S." surname="Huque">
+<organization>Verisign labs</organization>
+<address><postal><street>12061 Bluemont Way</street><code>20190</code><city>Reston</city><country>USA</country></postal> <email>shuque@verisign.com</email><uri>http://www.verisignlabs.com/</uri></address>
+</author>
 <date month="TODO" year="2015"/>
 <workgroup>Domain Name System Operations (dnsop) Working Group</workgroup>
 <abstract>
@@ -53,19 +57,41 @@ target="https://github.com/bortzmeyer/ietf-dnsop-nxdomain">at Github</eref>.</t>
 
 <middle>
   <section anchor="intro" title="Introduction and background">
-    <t>In virtually all existing resolvers, a cached NXDOMAIN is not
-    considered "proof" that there can be no child domains
+    <t>
+      The DNS protocol <xref target="RFC1035"/> defines response code 
+      3 as "Name Error", or "NXDOMAIN", i.e. the queried domain name
+      does not exist in the DNS. Since domain names are represented as
+      a tree of labels <xref target="RFC1034">RFC 1034</xref>, Section 3.1,
+      non-existence of a node implies non-existence of the entire sub-tree 
+      rooted at this node.
+    </t>
+    <t>
+      The DNS iterative resolution algorithm precisely interprets the
+      NXDOMAIN signal in this manner. If it encounters an NXDOMAIN
+      response code from an authoritative server, it immediately stops
+      iteration and returns the NXDOMAIN response to the querier.
+    </t>
+    <t>However, in virtually all existing resolvers, a cached NXDOMAIN 
+    is not considered "proof" that there can be no child domains
     underneath. This is due to an ambiguity in <xref
     target="RFC1034"/> that failed to distinguish ENT (empty
     nonterminal domain names, <xref
     target="I-D.ietf-dnsop-dns-terminology"/>) from nonexistent names.
     For DNSSEC, the IETF had to distinguish this case (<xref
     target="RFC4034"/>, section 3.1.3.2), but the implication on
-    non-DNSSEC resolvers wasn't fully realized.</t>
-<t>This document dictates that NXDOMAIN means NXDOMAIN for all child domains. Since the
-domain names are organized in a tree, it is a simple consequence of
-the tree structure: non-existence of a node implies non-existence of
-the entire sub-tree rooted at this node.</t>
+    non-DNSSEC resolvers wasn't fully realized.
+
+    [**NOTE: Is section 3.1.3.2 correct? 3.1.3.2 doesn't exist, and
+    3.1.3 talks about the Labels field of RRSIG**]
+    </t>
+
+    <t>
+      This document clarifies that an NXDOMAIN response for a domain name 
+      means that no child domains underneath the queried name exist either.
+      And furthermore, that DNS resolvers should interpret cached NXDOMAIN
+      responses in this manner.
+    </t>
+
 <section title="Requirements Terminology">
 <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -101,6 +127,12 @@ target="RFC2308"/> applies unchanged, and the fact that a subtree does
 not exist is not forever: the NXDOMAIN is cached only for the duration
 of the "negative TTL" (section 3 of xref
 target="RFC2308"/>).</t>
+<t>
+  (TODO: Add a paragraph elaborating on resolvers needing to correctly
+  produce NSEC/NSEC3 records for authenticated denial of existence for
+  inferred names underneath an NXDOMAIN boundary.)
+</t>
+
 </section>
 
 <section anchor="benefits" title="Benefits">
@@ -112,7 +144,7 @@ target="RFC2308"/>).</t>
   minimisation <xref
   target="I-D.ietf-dnsop-qname-minimisation"/> since it will allow to
   stop searching as soon as a NXDOMAIN is encountered.</t>
-  <t>NXDOMAIN cut may also help with random QNAME attacks <xref
+  <t>NXDOMAIN cut may also help with some patterns of random QNAME attacks <xref
   target="joost-dnsterror"/> <xref
   target="balakrichenan-dafa888"/>. In these attacks, queries are sent
   for a QNAME composed of a fixed suffix ("dafa888.wf" in one of the
