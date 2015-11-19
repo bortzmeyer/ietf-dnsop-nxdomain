@@ -78,11 +78,8 @@ target="https://github.com/bortzmeyer/ietf-dnsop-nxdomain">at Github</eref>.</t>
     nonterminal domain names, <xref
     target="I-D.ietf-dnsop-dns-terminology"/>) from nonexistent names.
     For DNSSEC, the IETF had to distinguish this case (<xref
-    target="RFC4034"/>, section 3.1.3.2), but the implication on
-    non-DNSSEC resolvers wasn't fully realized.
-
-    [**NOTE: Is section 3.1.3.2 correct? 3.1.3.2 doesn't exist, and
-    3.1.3 talks about the Labels field of RRSIG**]
+    target="RFC4034"/>), but the implication on non-DNSSEC resolvers 
+    wasn't fully realized.
     </t>
 
     <t>
