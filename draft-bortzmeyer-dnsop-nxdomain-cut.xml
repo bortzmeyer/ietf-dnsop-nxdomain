@@ -142,11 +142,12 @@ target="RFC2308"/>).</t>
   minimisation <xref
   target="I-D.ietf-dnsop-qname-minimisation"/> since it will allow to
   stop searching as soon as a NXDOMAIN is encountered.</t>
-  <t>NXDOMAIN cut may also help with some patterns of random QNAME attacks <xref
+  <t>NXDOMAIN cut may also help mitigate random QNAME attacks <xref
   target="joost-dnsterror"/> <xref
-  target="balakrichenan-dafa888"/>. In these attacks, queries are sent
-  for a QNAME composed of a fixed suffix ("dafa888.wf" in one of the
-  articles above), which is typically nonexistent, and a random prefix, different for each request. A
+  target="balakrichenan-dafa888"/>, where there is a fixed suffix which
+  does not exist. In these attacks, queries are sent for a QNAME composed 
+  of a fixed suffix ("dafa888.wf" in one of the articles above), which is 
+  typically nonexistent, and a random prefix, different for each request. A
   resolver receiving these requests have to forward them to the
   authoritative servers. With NXDOMAIN cut, we would just have to send
   to the resolver a query for the fixed suffix, the resolver would get
