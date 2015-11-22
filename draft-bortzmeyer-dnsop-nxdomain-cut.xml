@@ -232,7 +232,7 @@ security consequences.</t>
 <t>If a resolver does not validate the answers with DNSSEC, it can of
 course be poisoned with a false NXDOMAIN, thus "deleting" a part of
 the domain name tree. This denial-of-service attack is already
-possible with the rules of this document (but "NXDOMAIN cut" may
+possible without the rules of this document (but "NXDOMAIN cut" may
 increase its effects). The only solution is to use DNSSEC.</t>
 </section>
 
