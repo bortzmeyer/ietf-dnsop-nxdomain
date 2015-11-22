@@ -15,6 +15,8 @@
 <!ENTITY rfc5936 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5936.xml">
 <!ENTITY rfc6347 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6347.xml">
+<!ENTITY rfc6604 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.6604.xml">
 <!ENTITY rfc6973 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6973.xml">
 <!ENTITY rfc6982 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6982.xml">
@@ -45,12 +47,12 @@
 <workgroup>Domain Name System Operations (dnsop) Working Group</workgroup>
 <abstract>
 <t>This document states clearly that when a DNS resolver receives a
-response with status code NXDOMAIN, it means that the name in the
+response with response code NXDOMAIN, it means that the name in the
 question section AND ALL THE NAMES UNDER IT do not exist.</t>
 <t>REMOVE BEFORE PUBLICATION: this document should be discussed in the
 IETF DNSOP (DNS Operations) group, through its mailing list. The
 source of the document, as well as a list of open issues, is currently
-kept on <eref
+kept <eref
 target="https://github.com/bortzmeyer/ietf-dnsop-nxdomain">at Github</eref>.</t>
 </abstract>
 </front>
@@ -101,7 +103,8 @@ resolver SHOULD stop searching if it encounters a cached NXDOMAIN.
 The response to the triggering query should be NXDOMAIN.</t>
 <t>When an iterative caching DNS resolver stores an NXDOMAIN in its
  cache, all names and RRsets at or below that node SHOULD be deleted
-since they will have become unreachable. [TODO: currently under
+since they will have become unreachable. "Deleted" means that
+subsequent requests for these names will yield NXDOMAIN. [TODO: currently under
 discussion, some people find it dangerous. MAY instead of SHOULD? Only
 if the NXDOMAIN is DNSSEC-validated? Perhaps the resolver could be configured to not "bulk delete"
 TLDs (or root). See <xref target="security"/>.]
@@ -129,7 +132,9 @@ target="RFC2308"/>).</t>
   provide authenticated denial of existence for names underneath the 
   NXDOMAIN boundary.
 </t>
-
+<t>Warning: because of <xref target="RFC6604"/>, the name whose existence is
+denied by the NXDOMAIN is not always the QNAME. If there is a chain of
+CNAME (or DNAME), the name which does not exist is the last of the chain.</t>
 </section>
 
 <section anchor="benefits" title="Benefits">
@@ -141,10 +146,11 @@ target="RFC2308"/>).</t>
   minimisation <xref
   target="I-D.ietf-dnsop-qname-minimisation"/> since it will allow to
   stop searching as soon as a NXDOMAIN is encountered.</t>
-  <t>NXDOMAIN cut may also help mitigate random QNAME attacks <xref
+  <t>NXDOMAIN cut may also help mitigate certain types of random QNAME attacks <xref
   target="joost-dnsterror"/> <xref
   target="balakrichenan-dafa888"/>, where there is a fixed suffix which
-  does not exist. In these attacks, queries are sent for a QNAME composed 
+  does not exist. In these attacks against the authoritative name
+  server, queries are sent to resolvers for a QNAME composed 
   of a fixed suffix ("dafa888.wf" in one of the articles above), which is 
   typically nonexistent, and a random prefix, different for each request. A
   resolver receiving these requests have to forward them to the
@@ -262,7 +268,7 @@ example.com.</t>
 <t>The text of this document was mostly copied from <xref
   target="I-D.vixie-dnsext-resimprove"/>, section 3. Thanks to its
 authors, Paul Vixie, Rodney Joffe and Frederico Neves.</t>
-<t>Thanks to Duane Wessels and Tony Finch for fact checking and explanations.</t>
+<t>Thanks to Duane Wessels, Tony Finch and Jinmei Tatuya for fact checking and explanations.</t>
 </section>
 
 </middle>
@@ -274,6 +280,7 @@ authors, Paul Vixie, Rodney Joffe and Frederico Neves.</t>
 &rfc1035;
 &rfc2119;
 &rfc2308;
+&rfc6604;
 &I-D.ietf-dnsop-dns-terminology; 
 </references>
 
