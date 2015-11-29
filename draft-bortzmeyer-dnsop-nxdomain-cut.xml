@@ -25,11 +25,13 @@
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-qname-minimisation">
 <!ENTITY I-D.vixie-dnsext-resimprove SYSTEM
 "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.vixie-dnsext-resimprove.xml">
+<!ENTITY I-D.fujiwara-dnsop-nsec-aggressiveuse SYSTEM
+"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.fujiwara-dnsop-nsec-aggressiveuse">
 <!ENTITY I-D.ietf-dnsop-dns-terminology SYSTEM
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-dns-terminology">
 ]>
 
-<rfc docName="draft-bortzmeyer-dnsop-nxdomain-cut-01"
+<rfc docName="draft-bortzmeyer-dnsop-nxdomain-cut-02"
      category="std" ipr="trust200902" updates="1034,2308">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -90,7 +92,7 @@ target="https://github.com/bortzmeyer/ietf-dnsop-nxdomain">at Github</eref>.</t>
       domain names are organized in a tree, it is a simple consequence
       of the tree structure: non-existence of a node implies
       non-existence of the entire sub-tree rooted at this node.</t>
-<section title="Requirements Terminology">
+      <section title="Requirements Terminology">
 <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
    document are to be interpreted as described in <xref target="RFC2119"/>.</t>
@@ -101,6 +103,11 @@ target="https://github.com/bortzmeyer/ietf-dnsop-nxdomain">at Github</eref>.</t>
 <t>When searching downward in its cache, an iterative caching DNS
 resolver SHOULD stop searching if it encounters a cached NXDOMAIN.
 The response to the triggering query should be NXDOMAIN.</t>
+<t>TODO The next paragraph is challenged because too
+implementation-oriented. Should we just keep the first paragraph? My
+concern is that some resolvers may have an implementation of the cache made of a
+tree plus a hashed index and therefore won't "search downward" if they
+have a cached answer.</t>
 <t>When an iterative caching DNS resolver stores an NXDOMAIN in its
  cache, all names and RRsets at or below that node SHOULD be deleted
 since they will have become unreachable. "Deleted" means that
@@ -134,7 +141,9 @@ target="RFC2308"/>).</t>
 </t>
 <t>Warning: because of <xref target="RFC6604"/>, the name whose existence is
 denied by the NXDOMAIN is not always the QNAME. If there is a chain of
-CNAME (or DNAME), the name which does not exist is the last of the chain.</t>
+CNAME (or DNAME), the name which does not exist is the last of the
+chain. TODO: find a dedicated terminology such as "NXDOMAINed name" or
+"denied domain" instead of "QNAME".</t>
 </section>
 
 <section anchor="benefits" title="Benefits">
@@ -195,6 +204,8 @@ this behavior.
 </section>
 
 <section anchor="future" title="Future work">
+  <t>TODO: drop this section entirely? Or just downgrade it to an
+  appendix "why can't we just use the owner name of the returned SOA"?</t>
   <t>In this document, we deduce the non-existence of a domain only
   for NXDOMAIN answers where the QNAME was this exact domain. If a
   resolver sends a query to the name servers of the TLD example, and
@@ -218,6 +229,9 @@ would be, when receiving a NXDOMAIN with a SOA which is more than one
 label up in the tree, to send requests for the domains which are between the
 QNAME and the owner name of the SOA. (A resolver which does DNSSEC
 validation or QNAME minimisation will need to do it, anyway.)</t>
+<t>TODO a mention of <xref
+target="I-D.fujiwara-dnsop-nsec-aggressiveuse"/>? Unlike NXDOMAIN cut,
+it requires DNSSEC but it is more powerful since it can synthetize NXDOMAINs.</t>
 </section>
 
 <section title="IANA Considerations">
@@ -289,6 +303,7 @@ authors, Paul Vixie, Rodney Joffe and Frederico Neves.</t>
 &rfc6982;
 &I-D.vixie-dnsext-resimprove;
 &I-D.ietf-dnsop-qname-minimisation;
+&I-D.fujiwara-dnsop-nsec-aggressiveuse;
 
 <reference anchor="joost-dnsterror" target="http://www.michael-joost.de/dnsterror.html">
 <front>
