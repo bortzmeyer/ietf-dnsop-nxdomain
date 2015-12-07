@@ -103,6 +103,10 @@ target="https://github.com/bortzmeyer/ietf-dnsop-nxdomain">at Github</eref>.</t>
 <t>When searching downward in its cache, an iterative caching DNS
 resolver SHOULD stop searching if it encounters a cached NXDOMAIN.
 The response to the triggering query should be NXDOMAIN.</t>
+<t>TODO replaces the previous paragraph by something more descriptive
+and less algorithmic? "After the reception of a NXDOMAIN answer for a
+given name, the resolver SHOULD/MUST? reply NXDOMAIN for every name
+under the denied name."</t> 
 <t>TODO The next paragraph is challenged because too
 implementation-oriented. Should we just keep the first paragraph? My
 concern is that some resolvers may have an implementation of the cache made of a
