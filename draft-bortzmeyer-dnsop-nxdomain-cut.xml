@@ -31,7 +31,7 @@
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-dns-terminology">
 ]>
 
-<rfc docName="draft-bortzmeyer-dnsop-nxdomain-cut-02"
+<rfc docName="draft-bortzmeyer-dnsop-nxdomain-cut-03-BETA"
      category="std" ipr="trust200902" updates="1034,2308">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -45,7 +45,7 @@
 <organization>Verisign labs</organization>
 <address><postal><street>12061 Bluemont Way</street><code>20190</code><city>Reston</city><country>USA</country></postal> <email>shuque@verisign.com</email><uri>http://www.verisignlabs.com/</uri></address>
 </author>
-<date month="November" year="2015"/>
+<date month="TODO" year="TODO"/>
 <workgroup>Domain Name System Operations (dnsop) Working Group</workgroup>
 <abstract>
 <t>This document states clearly that when a DNS resolver receives a
@@ -131,7 +131,7 @@ foo.example would not be forwarded.</t>
 target="RFC2308"/>. Otherwise,  <xref
 target="RFC2308"/> applies unchanged, and the fact that a subtree does
 not exist is not forever: the NXDOMAIN is cached only for the duration
-of the "negative TTL" (section 3 of xref
+of the "negative TTL" (section 3 of <xref
 target="RFC2308"/>).</t>
 <t>
   Validating resolvers need to select the necessary NSEC or NSEC3
