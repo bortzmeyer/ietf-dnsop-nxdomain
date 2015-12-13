@@ -276,10 +276,17 @@ more mature.  It is up to the individual working groups to use this
 information as they see fit".</t>
 <t>As of today, all existing DNS resolvers are conservative: they
 consider a NXDOMAIN as only significant for the name itself, not for
-the names under. All
+the names under. Almost all the
 current recursive servers will upstream a query for out-of-cache
 sub.example.com even if their cache contains an NXDOMAIN for
 example.com.</t>
+<t>A possible exception is PowerDNS recursor which has a partial
+support of NXDOMAIN cut (it is off by default) with its
+"root-nx-trust" setting, <eref
+target="https://doc.powerdns.com/md/recursor/settings/#root-nx-trust">described
+as</eref> "If set, an NXDOMAIN from the root-servers will serve as a
+blanket NXDOMAIN for the entire TLD the query belonged to. The effect
+of this is far fewer queries to the root-servers.".</t>
 </section>
 
 <section title="Acknowledgments">
