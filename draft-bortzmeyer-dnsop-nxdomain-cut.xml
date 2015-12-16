@@ -21,14 +21,13 @@
 <!ENTITY rfc6982 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6982.xml">
 <!ENTITY rfc7626 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7626.xml">
+<!ENTITY rfc7719 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7719.xml">
 <!ENTITY I-D.ietf-dnsop-qname-minimisation SYSTEM
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-qname-minimisation">
 <!ENTITY I-D.vixie-dnsext-resimprove SYSTEM
 "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.vixie-dnsext-resimprove.xml">
 <!ENTITY I-D.fujiwara-dnsop-nsec-aggressiveuse SYSTEM
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.fujiwara-dnsop-nsec-aggressiveuse">
-<!ENTITY I-D.ietf-dnsop-dns-terminology SYSTEM
-"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-dns-terminology">
 ]>
 
 <rfc docName="draft-bortzmeyer-dnsop-nxdomain-cut-03-BETA"
@@ -80,7 +79,7 @@ target="https://github.com/bortzmeyer/ietf-dnsop-nxdomain">at Github</eref>.</t>
     underneath. This is due to an ambiguity in <xref
     target="RFC1034"/> that failed to distinguish ENT (empty
     nonterminal domain names, <xref
-    target="I-D.ietf-dnsop-dns-terminology"/>) from nonexistent names.
+    target="RFC7719"/>) from nonexistent names.
     For DNSSEC, the IETF had to distinguish this case (<xref
     target="RFC4035"/>, section 3.1.3.2), but the implication on
     non-DNSSEC resolvers wasn't fully realized.</t>
@@ -193,9 +192,9 @@ chain. TODO: find a dedicated terminology such as "NXDOMAINed name" or
   NXDOMAIN from example and therefore "deleted" everything under. This
   document assumes that such setup is rare and does not need to be supported.</t>
 <t>Another issue that may happen: today, we see broken authoritative name servers which reply to ENT
-(<xref target="I-D.ietf-dnsop-dns-terminology"/>, section 6) with
+(<xref target="RFC7719"/>, section 6) with
 NXDOMAIN instead of the normal NODATA (<xref
-target="I-D.ietf-dnsop-dns-terminology"/>, section 3).</t>
+target="RFC7719"/>, section 3).</t>
 <t>RFC-EDITOR: REMOVE THE PARAGRAPH BEFORE PUBLICATION. An example today is
 mta2._domainkey.cbs.nl (which exists) where querying _domainkey.cbs.nl
 yields NXDOMAIN. Another example is
@@ -306,7 +305,7 @@ authors, Paul Vixie, Rodney Joffe and Frederico Neves.</t>
 &rfc2119;
 &rfc2308;
 &rfc6604;
-&I-D.ietf-dnsop-dns-terminology; 
+&rfc7719;
 </references>
 
 <references title='Informative References'>
