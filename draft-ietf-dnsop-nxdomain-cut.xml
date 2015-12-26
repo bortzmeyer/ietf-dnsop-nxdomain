@@ -273,14 +273,16 @@ the benefit of running code, which may serve as evidence of valuable
 experimentation and feedback that have made the implemented protocols
 more mature.  It is up to the individual working groups to use this
 information as they see fit".</t>
-<t>As of today, all existing DNS resolvers are conservative: they
-consider a NXDOMAIN as only significant for the name itself, not for
-the names under. Almost all the
-current recursive servers will upstream a query for out-of-cache
-sub.example.com even if their cache contains an NXDOMAIN for
-example.com.</t>
-<t>A possible exception is PowerDNS recursor which has a partial
-support of NXDOMAIN cut (it is off by default) with its
+<t>As of today, practically all existing DNS resolvers are conservative: 
+they consider a NXDOMAIN as only significant for the name itself, not for
+the names under. Almost all the current recursive servers will send
+upstream a query for out-of-cache sub.example.com even if their cache 
+contains an NXDOMAIN for example.com.</t>
+
+<t>There are a few exceptions. The Unbound resolver has a configuration 
+parameter called " harden-below-nxdomain", which if set to "yes" turns 
+on NXDOMAIN cut behavior. The PowerDNS recursor which has optional
+partial support for NXDOMAIN cut, for the root domain only, with its
 "root-nx-trust" setting, <eref
 target="https://doc.powerdns.com/md/recursor/settings/#root-nx-trust">described
 as</eref> "If set, an NXDOMAIN from the root-servers will serve as a
