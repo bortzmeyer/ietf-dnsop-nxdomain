@@ -48,8 +48,8 @@
 <workgroup>Internet Engineering Task Force</workgroup>
 <abstract>
 <t>This document states clearly that when a DNS resolver receives a
-response with response code NXDOMAIN, it means that the name in the
-question section AND ALL THE NAMES UNDER IT do not exist.</t>
+response with response code of NXDOMAIN, it means that the domain name 
+in the question section AND ALL THE NAMES UNDER IT do not exist.</t>
 <t>REMOVE BEFORE PUBLICATION: this document should be discussed in the
 IETF DNSOP (DNS Operations) group, through its mailing list. The
 source of the document, as well as a list of open issues, is currently
@@ -77,9 +77,8 @@ target="https://github.com/bortzmeyer/ietf-dnsop-nxdomain">at Github</eref>.</t>
     <t>However, in virtually all existing resolvers, a cached NXDOMAIN 
     is not considered "proof" that there can be no child domains
     underneath. This is due to an ambiguity in <xref
-    target="RFC1034"/> that failed to distinguish ENT (empty
-    nonterminal domain names, <xref
-    target="RFC7719"/>) from nonexistent names.
+    target="RFC1034"/> that failed to distinguish Empty Non-Terminal
+    names (ENT)  (<xref target="RFC7719"/>) from nonexistent names.
     For DNSSEC, the IETF had to distinguish this case (<xref
     target="RFC4035"/>, section 3.1.3.2), but the implication on
     non-DNSSEC resolvers wasn't fully realized.</t>
@@ -99,6 +98,9 @@ target="https://github.com/bortzmeyer/ietf-dnsop-nxdomain">at Github</eref>.</t>
   </section>
 
 <section anchor="rules" title="Rules">
+
+<t>
+</t>
 <t>When searching downward in its cache, an iterative caching DNS
 resolver SHOULD stop searching if it encounters a cached NXDOMAIN.
 The response to the triggering query should be NXDOMAIN.</t>
@@ -137,10 +139,13 @@ not exist is not forever: the NXDOMAIN is cached only for the duration
 of the "negative TTL" (section 3 of <xref
 target="RFC2308"/>).</t>
 <t>
-  Validating resolvers need to select the necessary NSEC or NSEC3
-  records and include them in the AUTHORITY section of the response to 
-  provide authenticated denial of existence for names underneath the 
-  NXDOMAIN boundary.
+  If the cached NXDOMAIN response is from a DNSSEC signed zone, then
+  it will have accompanying NSEC or NSEC3 records that authenticate
+  the non-existence of the name. For a descendant name of the original
+  NXDOMAIN name, the same set of NSEC or NSEC3 records proves the 
+  non-existence of the descendant name. The iterative, caching resolver
+  MUST return these NSEC or NSEC3 records in the response to the
+  triggering query.
 </t>
 <t>Warning: because of <xref target="RFC6604"/>, the name whose existence is
 denied by the NXDOMAIN is not always the QNAME. If there is a chain of
@@ -156,8 +161,8 @@ chain. TODO: find a dedicated terminology such as "NXDOMAINed name" or
   <t>The correct behavior (in <xref target="RFC1034"/> and made
   clearer in this document) is specially useful when combined with QNAME
   minimisation <xref
-  target="I-D.ietf-dnsop-qname-minimisation"/> since it will allow to
-  stop searching as soon as a NXDOMAIN is encountered.</t>
+  target="I-D.ietf-dnsop-qname-minimisation"/> since it will allow a
+  resolver to stop searching as soon as an NXDOMAIN is encountered.</t>
   <t>NXDOMAIN cut may also help mitigate certain types of random QNAME attacks <xref
   target="joost-dnsterror"/> <xref
   target="balakrichenan-dafa888"/>, where there is a fixed suffix which
@@ -291,10 +296,12 @@ of this is far fewer queries to the root-servers.".</t>
 </section>
 
 <section title="Acknowledgments">
-<t>The text of this document was mostly copied from <xref
-  target="I-D.vixie-dnsext-resimprove"/>, section 3. Thanks to its
-authors, Paul Vixie, Rodney Joffe and Frederico Neves.</t>
-<t>Thanks to Duane Wessels, Tony Finch and Jinmei Tatuya for fact checking and explanations.</t>
+<t>The main idea is in this document is taken from 
+   <xref target="I-D.vixie-dnsext-resimprove"/>, section 3, "Stopping
+Downward Cache Search on NXDOMAIN". Thanks to its authors, Paul Vixie, 
+Rodney Joffe, and Frederico Neves. Additionally Tony Finch, John Levine, 
+Jinmei Tatuya, and Duane Wessels provided valuable feedback and 
+suggestions.</t>
 </section>
 
 </middle>
