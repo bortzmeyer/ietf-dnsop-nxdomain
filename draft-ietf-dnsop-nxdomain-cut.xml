@@ -54,7 +54,10 @@ which is thus denied AND ALL THE NAMES UNDER IT do not exist.</t>
 IETF DNSOP (DNS Operations) group, through its mailing list. The
 source of the document, as well as a list of open issues, is currently
 kept <eref
-target="https://github.com/bortzmeyer/ietf-dnsop-nxdomain">at Github</eref>.</t>
+target="https://github.com/bortzmeyer/ietf-dnsop-nxdomain">at
+Github</eref>.</t>
+<t>This documents clarifies RFC 1034 and modifies a bit RFC 2308 so it
+updates both of them.</t>
 </abstract>
 </front>
 
@@ -272,12 +275,12 @@ suggestions.</t>
 &rfc2119;
 &rfc2308;
 &rfc6604;
-&rfc7719;
 </references>
 
 <references title='Informative References'>
 &rfc4035;
 &rfc6982;
+&rfc7719;
 &I-D.vixie-dnsext-resimprove;
 &I-D.ietf-dnsop-qname-minimisation;
 &I-D.fujiwara-dnsop-nsec-aggressiveuse;
