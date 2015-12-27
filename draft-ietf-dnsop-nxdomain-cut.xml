@@ -49,7 +49,7 @@
 <abstract>
 <t>This document states clearly that when a DNS resolver receives a
 response with response code of NXDOMAIN, it means that the domain name 
-in the question section AND ALL THE NAMES UNDER IT do not exist.</t>
+which is thus denied AND ALL THE NAMES UNDER IT do not exist.</t>
 <t>REMOVE BEFORE PUBLICATION: this document should be discussed in the
 IETF DNSOP (DNS Operations) group, through its mailing list. The
 source of the document, as well as a list of open issues, is currently
@@ -90,11 +90,15 @@ target="https://github.com/bortzmeyer/ietf-dnsop-nxdomain">at Github</eref>.</t>
       domain names are organized in a tree, it is a simple consequence
       of the tree structure: non-existence of a node implies
       non-existence of the entire sub-tree rooted at this node.</t>
-      <section title="Requirements Terminology">
+      <section title="Terminology">
 <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-   document are to be interpreted as described in <xref target="RFC2119"/>.</t>
-</section>
+   document are to be interpreted as described in <xref
+   target="RFC2119"/>.</t>
+   <t>"Denied name": the domain name whose existence has been denied
+   by a response of rcode NXDOMAIN. In most cases, it is the QNAME
+   but, because of <xref target="RFC6604"/>, it is not always the case.</t>
+      </section>
   </section>
 
 <section anchor="rules" title="Rules">
@@ -132,11 +136,10 @@ non-existence of the descendant name. The iterative, caching resolver
 MUST return these NSEC or NSEC3 records in the response to the
 triggering query.
 </t>
-<t>Warning: because of <xref target="RFC6604"/>, the name whose existence is
-denied by the NXDOMAIN is not always the QNAME. If there is a chain of
+<t>Warning: if there is a chain of
 CNAME (or DNAME), the name which does not exist is the last of the
-chain. TODO: find a dedicated terminology such as "NXDOMAINed name" or
-"denied domain" instead of "QNAME".</t>
+chain (<xref target="RFC6604"/>) and not the QNAME. The NXDOMAIN
+stored in the cache is for the denied name, not always for the QNAME.</t>
 </section>
 
 <section anchor="benefits" title="Benefits">
@@ -160,7 +163,7 @@ chain. TODO: find a dedicated terminology such as "NXDOMAINed name" or
   to the resolver a query for the fixed suffix, the resolver would get
   a NXDOMAIN and then would stop forwarding the queries. (It would be
   better if the SOA record in the NXDOMAIN response were sufficient to
-  find the non-existing domain but this is more delicate, see 
+  find the non-existing domain but it is not the case, see 
   <xref target="future"/>.)</t>
   <t>Since the principles set in this document are so great, why are
   the rules of <xref target="rules"/> SHOULD and not MUST? This is
@@ -190,7 +193,7 @@ mta2._domainkey.cbs.nl (which exists) where querying _domainkey.cbs.nl
 yields NXDOMAIN. Another example is
 www.upenn.edu, redirected to www.upenn.edu-dscg.edgesuite.net while a
 query for edu-dscg.edgesuite.net returns NXDOMAIN.</t>
-<t>Such name servers are definitely broken and have always been. They MUST be fixed. Given
+<t>Such name servers are definitely wrong and have always been. Given
 the advantages of NXDOMAIN cuts, there is little reason to support
 this behavior.
 </t>
@@ -241,7 +244,7 @@ contains an NXDOMAIN for example.com.</t>
 configuration parameter called <eref
 target="https://www.unbound.net/documentation/unbound.conf.html">"harden-below-nxdomain"
 </eref>, which if set to "yes" turns on NXDOMAIN cut behavior ("only
-DNSSEC-secure nxdomains are used"). The PowerDNS recursor has optional
+DNSSEC-secure nxdomains are used", see <xref target="security"/>). The PowerDNS recursor has optional
 partial support for NXDOMAIN cut, for the root domain only, with its
 "root-nx-trust" setting, <eref
 target="https://doc.powerdns.com/md/recursor/settings/#root-nx-trust">described
@@ -303,7 +306,7 @@ suggestions.</t>
 
 <section anchor="future" title="Why can't we just use the owner name of the returned SOA?">
   <t>In this document, we deduce the non-existence of a domain only
-  for NXDOMAIN answers where the QNAME was this exact domain. If a
+  for NXDOMAIN answers where the denied name was this exact domain. If a
   resolver sends a query to the name servers of the TLD example, and
   asks the MX record for www.foobar.example, and receives a NXDOMAIN,
   it can only register the fact that www.foobar.example (and
@@ -335,7 +338,6 @@ non-existing domain names). Unlike NXDOMAIN cut,
 it requires DNSSEC but it is more powerful since it can synthetize
 NXDOMAINs for domains that were not queried.</t>
 </section>
-
 
 </back>
 
