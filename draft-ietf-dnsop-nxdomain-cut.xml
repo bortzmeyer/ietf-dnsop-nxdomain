@@ -44,8 +44,8 @@
 <organization>Verisign labs</organization>
 <address><postal><street>12061 Bluemont Way</street><code>20190</code><city>Reston</city><country>USA</country></postal> <email>shuque@verisign.com</email><uri>http://www.verisignlabs.com/</uri></address>
 </author>
-<date month="Dec" year="2015"/>
-<workgroup>Internet Engineering Task Force</workgroup>
+<date month="December" year="2015"/>
+<workgroup>Domain Name System Operations (dnsop) Working Group</workgroup>
 <abstract>
 <t>This document states clearly that when a DNS resolver receives a
 response with response code of NXDOMAIN, it means that the domain name 
@@ -284,9 +284,11 @@ the names under. Almost all the current recursive servers will send
 upstream a query for out-of-cache sub.example.com even if their cache 
 contains an NXDOMAIN for example.com.</t>
 
-<t>There are a few exceptions. The Unbound resolver has a configuration 
-parameter called " harden-below-nxdomain", which if set to "yes" turns 
-on NXDOMAIN cut behavior. The PowerDNS recursor which has optional
+<t>There are a few exceptions. The Unbound resolver has a
+configuration parameter called <eref
+target="https://www.unbound.net/documentation/unbound.conf.html">"harden-below-nxdomain"
+</eref>, which if set to "yes" turns on NXDOMAIN cut behavior ("only
+DNSSEC-secure nxdomains are used"). The PowerDNS recursor has optional
 partial support for NXDOMAIN cut, for the root domain only, with its
 "root-nx-trust" setting, <eref
 target="https://doc.powerdns.com/md/recursor/settings/#root-nx-trust">described
