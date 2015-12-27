@@ -99,33 +99,19 @@ target="https://github.com/bortzmeyer/ietf-dnsop-nxdomain">at Github</eref>.</t>
 
 <section anchor="rules" title="Rules">
 
-<t>
-</t>
 <t>When searching downward in its cache, an iterative caching DNS
 resolver SHOULD stop searching if it encounters a cached NXDOMAIN.
 The response to the triggering query should be NXDOMAIN.</t>
-<t>TODO replaces the previous paragraph by something more descriptive
-and less algorithmic? "After the reception of a NXDOMAIN answer for a
-given name, the resolver SHOULD/MUST? reply NXDOMAIN for every name
-under the denied name."</t> 
-<t>TODO The next paragraph is challenged because too
-implementation-oriented. Should we just keep the first paragraph? My
-concern is that some resolvers may have an implementation of the cache made of a
-tree plus a hashed index and therefore won't "search downward" if they
-have a cached answer.</t>
-<t>When an iterative caching DNS resolver stores an NXDOMAIN in its
- cache, all names and RRsets at or below that node SHOULD be deleted
-since they will have become unreachable. "Deleted" means that
-subsequent requests for these names will yield NXDOMAIN. [TODO: currently under
-discussion, some people find it dangerous. MAY instead of SHOULD? Only
+<t>When an iterative caching DNS resolver stores an NXDOMAIN in its cache,
+all names and RRsets at or below that node SHOULD be considered to be
+unreachable, and subsequent queries for such names SHOULD elicit an
+NXDOMAIN response. A resolver, depending on its implementation, MAY
+prune the subtree of positive cache entries at that node, or delete all
+individual
+cache entries for names below that node. [TODO: currently under
+discussion, some people find it dangerous. Only
 if the NXDOMAIN is DNSSEC-validated? Perhaps the resolver could be configured to not "bulk delete"
-TLDs (or root). See <xref target="security"/>.]
-[TODO: currently under discussion, some people find it costly for the
-resolver. A large purge also
-causes the resolver to do a lot of (possibly CPU intensive) work, and
-could also affect the traffic levels between a recursive and authoritatives.
-Perhaps a cache may want to limit the number of nodes/records that it deletes
-per NXDOMAIN response.]</t>
+TLDs (or root). See <xref target="security"/>.]</t>
 <t>By implication, a stream of queries foo.example, then bar.foo.example, where
 foo.example does not exist would normally cause both queries to be
 forwarded to example's nameservers. Following this recommended
@@ -138,14 +124,13 @@ target="RFC2308"/> applies unchanged, and the fact that a subtree does
 not exist is not forever: the NXDOMAIN is cached only for the duration
 of the "negative TTL" (section 3 of <xref
 target="RFC2308"/>).</t>
-<t>
-  If the cached NXDOMAIN response is from a DNSSEC signed zone, then
-  it will have accompanying NSEC or NSEC3 records that authenticate
-  the non-existence of the name. For a descendant name of the original
-  NXDOMAIN name, the same set of NSEC or NSEC3 records proves the 
-  non-existence of the descendant name. The iterative, caching resolver
-  MUST return these NSEC or NSEC3 records in the response to the
-  triggering query.
+<t>If the cached NXDOMAIN response is from a DNSSEC signed zone, then
+it will have accompanying NSEC or NSEC3 records that authenticate the
+non-existence of the name. For a descendant name of the original
+NXDOMAIN name, the same set of NSEC or NSEC3 records proves the
+non-existence of the descendant name. The iterative, caching resolver
+MUST return these NSEC or NSEC3 records in the response to the
+triggering query.
 </t>
 <t>Warning: because of <xref target="RFC6604"/>, the name whose existence is
 denied by the NXDOMAIN is not always the QNAME. If there is a chain of
@@ -211,37 +196,6 @@ this behavior.
 </t>
 </section>
 
-<section anchor="future" title="Future work">
-  <t>TODO: drop this section entirely? Or just downgrade it to an
-  appendix "why can't we just use the owner name of the returned SOA"?</t>
-  <t>In this document, we deduce the non-existence of a domain only
-  for NXDOMAIN answers where the QNAME was this exact domain. If a
-  resolver sends a query to the name servers of the TLD example, and
-  asks the MX record for www.foobar.example, and receives a NXDOMAIN,
-  it can only register the fact that www.foobar.example (and
-  everything underneath) does not exist. Even if the accompanying SOA
-  record is for example only, one cannot infer that
-  foobar.example is nonexistent. The accompanying SOA indicates the
-  apex of the zone, not the closest existing domain name.</t>
-  <t>RFC-EDITOR: REMOVE
-  BEFORE PUBLICATION: to use a real example today, ask the
-  authoritative name servers of the TLD fr about
-  anything.which.does.not.exist.gouv.fr. The SOA will indicate fr (the
-  apex) even while gouv.fr does exist (there is no zone cut between
-  gouv.fr and fr).</t>
-<t>In the future, deducing the non-existence of a node from the SOA
-  in the NXDOMAIN reply may certainly help with random qnames attacks
-but this is out-of-scope for this document. It would require to address
-the problems mentioned in the previous paragraph. A possible solution
-would be, when receiving a NXDOMAIN with a SOA which is more than one
-label up in the tree, to send requests for the domains which are between the
-QNAME and the owner name of the SOA. (A resolver which does DNSSEC
-validation or QNAME minimisation will need to do it, anyway.)</t>
-<t>TODO a mention of <xref
-target="I-D.fujiwara-dnsop-nsec-aggressiveuse"/>? Unlike NXDOMAIN cut,
-it requires DNSSEC but it is more powerful since it can synthetize NXDOMAINs.</t>
-</section>
-
 <section title="IANA Considerations">
 <t>This document has no actions for IANA.</t>
 </section>
@@ -283,7 +237,6 @@ they consider a NXDOMAIN as only significant for the name itself, not for
 the names under. Almost all the current recursive servers will send
 upstream a query for out-of-cache sub.example.com even if their cache 
 contains an NXDOMAIN for example.com.</t>
-
 <t>There are a few exceptions. The Unbound resolver has a
 configuration parameter called <eref
 target="https://www.unbound.net/documentation/unbound.conf.html">"harden-below-nxdomain"
@@ -347,6 +300,42 @@ suggestions.</t>
 </reference>
 
 </references>
+
+<section anchor="future" title="Why can't we just use the owner name of the returned SOA?">
+  <t>In this document, we deduce the non-existence of a domain only
+  for NXDOMAIN answers where the QNAME was this exact domain. If a
+  resolver sends a query to the name servers of the TLD example, and
+  asks the MX record for www.foobar.example, and receives a NXDOMAIN,
+  it can only register the fact that www.foobar.example (and
+  everything underneath) does not exist. Even if the accompanying SOA
+  record is for example only, one cannot infer that
+  foobar.example is nonexistent. The accompanying SOA indicates the
+  apex of the zone, not the closest existing domain name.</t>
+  <t>RFC-EDITOR: REMOVE
+  BEFORE PUBLICATION: to use a real example today, ask the
+  authoritative name servers of the TLD fr about
+  anything.which.does.not.exist.gouv.fr. The SOA will indicate fr (the
+  apex) even while gouv.fr does exist (there is no zone cut between
+  gouv.fr and fr).</t>
+<t>Deducing the non-existence of a node from the SOA
+  in the NXDOMAIN reply may certainly help with random qnames attacks
+but this is out-of-scope for this document. It would require to address
+the problems mentioned in the first paragraph of this section. A possible solution
+would be, when receiving a NXDOMAIN with a SOA which is more than one
+label up in the tree, to send requests for the domains which are between the
+QNAME and the owner name of the SOA. (A resolver which does DNSSEC
+validation or QNAME minimisation will need to do it, anyway.)</t>
+</section>
+
+<section title="Related approaches">
+<t>The document <xref
+target="I-D.fujiwara-dnsop-nsec-aggressiveuse"/> describes another way to
+address some of the same concerns (decreasing the traffic for
+non-existing domain names). Unlike NXDOMAIN cut,
+it requires DNSSEC but it is more powerful since it can synthetize
+NXDOMAINs for domains that were not queried.</t>
+</section>
+
 
 </back>
 
