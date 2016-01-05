@@ -30,7 +30,7 @@
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.fujiwara-dnsop-nsec-aggressiveuse">
 ]>
 
-<rfc docName="draft-ietf-dnsop-nxdomain-cut-00"
+<rfc docName="draft-ietf-dnsop-nxdomain-cut-01-BETA"
      category="std" ipr="trust200902" updates="1034,2308">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -44,7 +44,7 @@
 <organization>Verisign labs</organization>
 <address><postal><street>12061 Bluemont Way</street><code>20190</code><city>Reston</city><country>USA</country></postal> <email>shuque@verisign.com</email><uri>http://www.verisignlabs.com/</uri></address>
 </author>
-<date month="December" year="2015"/>
+<date month="TODO" year="TODO"/>
 <workgroup>Domain Name System Operations (dnsop) Working Group</workgroup>
 <abstract>
 <t>This document states clearly that when a DNS resolver receives a
@@ -65,7 +65,7 @@ updates both of them.</t>
   <section anchor="intro" title="Introduction and background">
     <t>
       The DNS protocol <xref target="RFC1035"/> defines response code 
-      3 as "Name Error", or "NXDOMAIN", i.e. the queried domain name
+      3 as "Name Error", or "NXDOMAIN", which means that the queried domain name
       does not exist in the DNS. Since domain names are represented as
       a tree of labels (<xref target="RFC1034"/>, Section 3.1),
       non-existence of a node implies non-existence of the entire sub-tree 
@@ -77,7 +77,8 @@ updates both of them.</t>
       response code from an authoritative server, it immediately stops
       iteration and returns the NXDOMAIN response to the querier.
     </t>
-    <t>However, in virtually all existing resolvers, a cached NXDOMAIN 
+    <t>However, in most known existing resolvers, a cached
+    non-existence for a domain
     is not considered "proof" that there can be no child domains
     underneath. This is due to an ambiguity in <xref
     target="RFC1034"/> that failed to distinguish Empty Non-Terminal
@@ -89,7 +90,7 @@ updates both of them.</t>
       This document specifies that an NXDOMAIN response for a domain
       name means that no child domains underneath the queried name
       exist either.  And furthermore, that DNS resolvers should
-      interpret cached NXDOMAIN responses in this manner. Since the
+      interpret cached non-existence in this manner. Since the
       domain names are organized in a tree, it is a simple consequence
       of the tree structure: non-existence of a node implies
       non-existence of the entire sub-tree rooted at this node.</t>
@@ -100,15 +101,20 @@ updates both of them.</t>
    target="RFC2119"/>.</t>
    <t>"Denied name": the domain name whose existence has been denied
    by a response of rcode NXDOMAIN. In most cases, it is the QNAME
-   but, because of <xref target="RFC6604"/>, it is not always the case.</t>
+   but, because of <xref target="RFC6604"/>, it is not always the
+   case.</t>
+   <t>Other terms are defined in <xref target="RFC1034"/> or <xref
+   target="RFC1035"/> or (like NXDOMAIN itself) in the more recent
+   <xref target="RFC7719"/>.</t>
       </section>
   </section>
 
 <section anchor="rules" title="Rules">
 
 <t>When searching downward in its cache, an iterative caching DNS
-resolver SHOULD stop searching if it encounters a cached NXDOMAIN.
-The response to the triggering query should be NXDOMAIN.</t>
+resolver SHOULD stop searching if it encounters a cached non-existence.
+When a resolver returns a response due
+to such a "cached non-existence", the response code MUST be NXDOMAIN.</t>
 <t>When an iterative caching DNS resolver stores an NXDOMAIN in its cache,
 all names and RRsets at or below that node SHOULD be considered to be
 unreachable, and subsequent queries for such names SHOULD elicit an
@@ -119,19 +125,25 @@ cache entries for names below that node. [TODO: currently under
 discussion, some people find it dangerous. Only
 if the NXDOMAIN is DNSSEC-validated? Perhaps the resolver could be configured to not "bulk delete"
 TLDs (or root). See <xref target="security"/>.]</t>
-<t>By implication, a stream of queries foo.example, then bar.foo.example, where
-foo.example does not exist would normally cause both queries to be
-forwarded to example's nameservers. Following this recommended
-practice of "NXDOMAIN cut",
-the second query and indeed any other query for names at or below
-foo.example would not be forwarded.</t>
+<t>For example, consider two successive queries to a resolver, with a
+non-existing domain 'foo.example': the first is for 'foo.example'
+(which results in an NXDOMAIN) and the second for 'bar.foo.example' (which
+also results in an NXDOMAIN).  Many resolvers today will forward both
+queries, as noticed in <xref target="impl"/>.  However, following the rules in this document ("NXDOMAIN cut"), a resolver would
+cache the first NXDOMAIN response, as a sign of non-existence, and then immediately return
+an NXDOMAIN response for the second query, without transmitting it to an
+authoritative server.</t>
+<t>If the first request is for 'bar.foo.example' and the second for
+'baz.foo.example', the first NXDOMAIN response won't tell anything
+about 'baz.foo.example' and therefore the second query will be
+transmitted as it was before "NXDOMAIN cut" (see <xref target="future"/>).</t>
 <t>These rules replace the second paragraph of section 5 of <xref
-target="RFC2308"/>. Otherwise,  <xref
-target="RFC2308"/> applies unchanged, and the fact that a subtree does
-not exist is not forever: the NXDOMAIN is cached only for the duration
+target="RFC2308"/>. Otherwise, this document does not update any other parts of <xref
+target="RFC2308"/>. The fact that a subtree does
+not exist is not forever: the non-existence is cached only for the duration
 of the "negative TTL" (section 3 of <xref
 target="RFC2308"/>).</t>
-<t>If the cached NXDOMAIN response is from a DNSSEC signed zone, then
+<t>If the NXDOMAIN response due to a cached non-existence is from a DNSSEC signed zone, then
 it will have accompanying NSEC or NSEC3 records that authenticate the
 non-existence of the name. For a descendant name of the original
 NXDOMAIN name, the same set of NSEC or NSEC3 records proves the
@@ -147,7 +159,7 @@ stored in the cache is for the denied name, not always for the QNAME.</t>
 
 <section anchor="benefits" title="Benefits">
   <t>The main benefit is a better efficiency of the caches. In the
-  example above, we send only one query instead of two, the second one
+  example above, the resolver send only one query instead of two, the second one
   being answered from the cache.</t>
   <t>The correct behavior (in <xref target="RFC1034"/> and made
   clearer in this document) is specially useful when combined with QNAME
@@ -162,7 +174,7 @@ stored in the cache is for the denied name, not always for the QNAME.</t>
   of a fixed suffix ("dafa888.wf" in one of the articles above), which is 
   typically nonexistent, and a random prefix, different for each request. A
   resolver receiving these requests have to forward them to the
-  authoritative servers. With NXDOMAIN cut, we would just have to send
+  authoritative servers. With NXDOMAIN cut, a system administrator would just have to send
   to the resolver a query for the fixed suffix, the resolver would get
   a NXDOMAIN and then would stop forwarding the queries. (It would be
   better if the SOA record in the NXDOMAIN response were sufficient to
@@ -185,7 +197,7 @@ stored in the cache is for the denied name, not always for the QNAME.</t>
   requests about this zone to his local authoritative name
   servers. NXDOMAIN cut would create problems here, since, depending
   on the order of requests to the resolver, it may have cached the
-  NXDOMAIN from example and therefore "deleted" everything under. This
+  non-existence from example and therefore "deleted" everything under. This
   document assumes that such setup is rare and does not need to be supported.</t>
 <t>Another issue that may happen: today, we see broken authoritative name servers which reply to ENT
 (<xref target="RFC7719"/>, section 6) with
@@ -196,7 +208,8 @@ mta2._domainkey.cbs.nl (which exists) where querying _domainkey.cbs.nl
 yields NXDOMAIN. Another example is
 www.upenn.edu, redirected to www.upenn.edu-dscg.edgesuite.net while a
 query for edu-dscg.edgesuite.net returns NXDOMAIN.</t>
-<t>Such name servers are definitely wrong and have always been. Given
+<t>Such name servers are definitely wrong and have always been. Their
+behaviour is incompatible with DNSSEC. Given
 the advantages of NXDOMAIN cuts, there is little reason to support
 this behavior.
 </t>
@@ -211,14 +224,15 @@ this behavior.
 attack named "random qnames" and described in <xref
 target="benefits"/>. Apart from that, it is believed to have no
 security consequences.</t>
-<t>If a resolver does not validate the answers with DNSSEC, it can of
+<t>If a resolver does not validate the answers with DNSSEC, or if the
+zone is not signed, the resolver can of
 course be poisoned with a false NXDOMAIN, thus "deleting" a part of
 the domain name tree. This denial-of-service attack is already
 possible without the rules of this document (but "NXDOMAIN cut" may
 increase its effects). The only solution is to use DNSSEC.</t>
 </section>
 
-<section title="Implementation status - RFC EDITOR: REMOVE BEFORE PUBLICATION">
+<section anchor="impl" title="Implementation status - RFC EDITOR: REMOVE BEFORE PUBLICATION">
 
 <t>This section records the status of known implementations of the
 protocol defined by this specification at the time of posting of this
