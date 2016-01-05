@@ -77,15 +77,17 @@ updates both of them.</t>
       response code from an authoritative server, it immediately stops
       iteration and returns the NXDOMAIN response to the querier.
     </t>
-    <t>However, in most known existing resolvers, a cached
+    <t>However, in most known existing resolvers today, a cached
     non-existence for a domain
     is not considered "proof" that there can be no child domains
     underneath. This is due to an ambiguity in <xref
     target="RFC1034"/> that failed to distinguish Empty Non-Terminal
     names (ENT)  (<xref target="RFC7719"/>) from nonexistent names.
-    For DNSSEC, the IETF had to distinguish this case (<xref
-    target="RFC4035"/>, section 3.1.3.2), but the implication on
-    non-DNSSEC resolvers wasn't fully realized.</t>
+    The distinction became especially important for the development of DNSSEC,
+    which provides proof of non-existence. <xref
+    target="RFC4035"/>, section 3.1.3.2, describes
+    how security-aware authoritative name servers make the distinction, but no 
+    existing RFCs describe the behavior for recursive name servers.</t>
     <t>
       This document specifies that an NXDOMAIN response for a domain
       name means that no child domains underneath the queried name
@@ -140,9 +142,10 @@ transmitted as it was before "NXDOMAIN cut" (see <xref target="future"/>).</t>
 <t>These rules replace the second paragraph of section 5 of <xref
 target="RFC2308"/>. Otherwise, this document does not update any other parts of <xref
 target="RFC2308"/>. The fact that a subtree does
-not exist is not forever: the non-existence is cached only for the duration
-of the "negative TTL" (section 3 of <xref
-target="RFC2308"/>).</t>
+not exist is not forever: <xref
+target="RFC2308"/>, section 3, already describes the
+amount of time
+that an NXDOMAIN response may be cached (the "negative TTL").</t>
 <t>If the NXDOMAIN response due to a cached non-existence is from a DNSSEC signed zone, then
 it will have accompanying NSEC or NSEC3 records that authenticate the
 non-existence of the name. For a descendant name of the original
