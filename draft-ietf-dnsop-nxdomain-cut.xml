@@ -23,11 +23,11 @@
 <!ENTITY rfc7626 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7626.xml">
 <!ENTITY rfc7719 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7719.xml">
 <!ENTITY I-D.ietf-dnsop-qname-minimisation SYSTEM
-"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-qname-minimisation">
+"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-qname-minimisation.xml">
 <!ENTITY I-D.vixie-dnsext-resimprove SYSTEM
 "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.vixie-dnsext-resimprove.xml">
 <!ENTITY I-D.fujiwara-dnsop-nsec-aggressiveuse SYSTEM
-"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.fujiwara-dnsop-nsec-aggressiveuse">
+"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.fujiwara-dnsop-nsec-aggressiveuse.xml">
 ]>
 
 <rfc docName="draft-ietf-dnsop-nxdomain-cut-01-BETA"
