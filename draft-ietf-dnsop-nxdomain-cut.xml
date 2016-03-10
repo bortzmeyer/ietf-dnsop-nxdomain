@@ -113,20 +113,15 @@ updates both of them.</t>
 
 <section anchor="rules" title="Rules">
 
-<t>When searching downward in its cache, an iterative caching DNS
-resolver SHOULD stop searching if it encounters a cached non-existence.
-When a resolver returns a response due
-to such a "cached non-existence", the response code MUST be NXDOMAIN.</t>
-<t>When an iterative caching DNS resolver stores an NXDOMAIN in its cache,
-all names and RRsets at or below that node SHOULD be considered to be
-unreachable, and subsequent queries for such names SHOULD elicit an
-NXDOMAIN response. A resolver, depending on its implementation, MAY
-prune the subtree of positive cache entries at that node, or delete all
-individual
-cache entries for names below that node. [TODO: currently under
-discussion, some people find it dangerous. Only
-if the NXDOMAIN is DNSSEC-validated? Perhaps the resolver could be configured to not "bulk delete"
-TLDs (or root). See <xref target="security"/>.]</t>
+<t>When an iterative caching DNS resolver receives a response
+NXDOMAIN, it SHOULD store it in its cache and
+all names and RRsets at or below that node SHOULD then be considered to be
+unreachable. Subsequent queries for such names SHOULD elicit an
+NXDOMAIN response.</t>
+<t>[TODO: currently under discussion, some people find it
+dangerous. Only if the NXDOMAIN is DNSSEC-validated? Perhaps the
+resolver could be configured to not apply this rule to TLDs (or
+root). See <xref target="security"/>.]</t>
 <t>For example, consider two successive queries to a resolver, with a
 non-existing domain 'foo.example': the first is for 'foo.example'
 (which results in an NXDOMAIN) and the second for 'bar.foo.example' (which
@@ -183,12 +178,6 @@ stored in the cache is for the denied name, not always for the QNAME.</t>
   better if the SOA record in the NXDOMAIN response were sufficient to
   find the non-existing domain but it is not the case, see 
   <xref target="future"/>.)</t>
-  <t>Since the principles set in this document are so great, why are
-  the rules of <xref target="rules"/> SHOULD and not MUST? This is
-  because some
-  resolver may have a cache which is NOT organized as a tree (but, for
-  instance, as a dictionary) and
-  therefore have a good reason to ignore this.</t>
 </section>
 
 <section title="Possible issues">
@@ -196,7 +185,7 @@ stored in the cache is for the denied name, not always for the QNAME.</t>
   delegated (so the example's name servers will reply NXDOMAIN for a
   query about anything.foobar.example). A system administrator decides
   to name the internal machines of his organization under
-  office.foobar.example and use a trick of his resolver to forward
+  office.foobar.example and uses a trick of his resolver to forward
   requests about this zone to his local authoritative name
   servers. NXDOMAIN cut would create problems here, since, depending
   on the order of requests to the resolver, it may have cached the
@@ -216,6 +205,28 @@ behaviour is incompatible with DNSSEC. Given
 the advantages of NXDOMAIN cuts, there is little reason to support
 this behavior.
 </t>
+</section>
+
+<section anchor="impladvice" title="Implementation considerations">
+  <t>This section is non-normative, and is composed only of various
+  things which may be useful for implementors. A recursive resolver
+  may implement its cache in many ways. The most obvious one is a tree
+  data structure, because it fits the data model of domain names. But,
+  in practice, other implementations are possible, as well as various
+  optimisations (such as a tree, augmented by an index of some common
+  domain names).</t>
+  <t>If a resolver implements its cache as a tree (without any
+  optimisation), one way to follow the rules of <xref target="rules"/>
+  is, when receiving the NXDOMAIN, to prune the subtree of positive
+  cache entries at that node, or to delete all individual cache
+  entries for names below that node. Then, when searching downward in
+  its cache, this iterative caching DNS resolver stop searching if it
+  encounters a cached non-existence.
+  </t>
+  <t>Some resolver may have a cache which is NOT organized as a tree
+  (but, for instance, as a dictionary) and therefore have a good
+  reason to ignore the rules of <xref target="rules"/> which are
+  a SHOULD and not a MUST.</t>
 </section>
 
 <section title="IANA Considerations">
@@ -255,7 +266,8 @@ the benefit of running code, which may serve as evidence of valuable
 experimentation and feedback that have made the implemented protocols
 more mature.  It is up to the individual working groups to use this
 information as they see fit".</t>
-<t>As of today, practically all existing DNS resolvers are conservative: 
+<t>As of today, practically all existing DNS resolvers are
+conservative by default: 
 they consider a NXDOMAIN as only significant for the name itself, not for
 the names under. Almost all the current recursive servers will send
 upstream a query for out-of-cache sub.example.com even if their cache 
