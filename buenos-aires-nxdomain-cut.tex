@@ -1,0 +1,46 @@
+\documentclass[ignorenonframetext]{beamer}
+\usetheme{Madrid}
+\usepackage[utf8x]{inputenc}
+\usepackage{bortzmeyer-utils}
+
+\title{NXDOMAIN cut, next steps}
+\author{Stéphane Bortzmeyer - AFNIC}
+\date{IETF 95 - Buenos Aires - dnsop WG}
+
+\begin{document}
+
+\begin{frame}
+\maketitle  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Recent news}
+  \begin{itemize}
+  \item<2->Lots of discussion before the adoption by the WG
+  \item<3->Draft -00 published in december 2015
+  \item<4->Everything quiet after that
+  \item<5->Two implementations discovered (Unbound and PowerDNS)  
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Lasting issues}
+  \begin{enumerate}
+  \item<2->Too much ``implementation-oriented''. Should describe
+    behavior, not implementation. Fully addressed by -01? TODO not
+    published yet
+  \item<3->''Security'' issue with cache poisoning. Can I delete
+    the whole \url{.com} with a successful packet? Limit NXDOMAIN cut to
+    DNSSEC?
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Way forward}
+  \begin{enumerate}
+  \item<2->Lack of discussion because document is ready?
+  \item<3->Or is there a big unsolved problem?
+  \end{enumerate}
+\end{frame}
+
+\end{document}
