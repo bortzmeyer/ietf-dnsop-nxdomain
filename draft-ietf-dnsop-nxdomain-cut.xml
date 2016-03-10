@@ -224,8 +224,8 @@ this behavior.
   encounters a cached non-existence.
   </t>
   <t>Some resolver may have a cache which is NOT organized as a tree
-  (but, for instance, as a dictionary) and therefore have a good
-  reason to ignore the rules of <xref target="rules"/> which are
+  (but, for instance, as a dictionary) and therefore have a 
+  reason to ignore the rules of <xref target="rules"/>. So these rules are
   a SHOULD and not a MUST.</t>
 </section>
 
