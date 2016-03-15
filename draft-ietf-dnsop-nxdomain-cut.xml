@@ -108,6 +108,12 @@ updates both of them.</t>
    <t>Other terms are defined in <xref target="RFC1034"/> or <xref
    target="RFC1035"/> or (like NXDOMAIN itself) in the more recent
    <xref target="RFC7719"/>.</t>
+   <t>The domain name space is conceptually defined in terms of a tree
+structure. The implementation of a DNS resolver/cache MAY use a tree
+or other data structures. Sometimes, this document mentions tree
+operations, because it is the way domain names are defined, but it
+does not imply that the inner implementation of the server uses a
+tree.</t>
       </section>
   </section>
 
