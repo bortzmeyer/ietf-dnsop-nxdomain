@@ -233,6 +233,10 @@ this behavior.
   (but, for instance, as a dictionary) and therefore have a 
   reason to ignore the rules of <xref target="rules"/>. So these rules are
   a SHOULD and not a MUST.</t>
+  <t>TODO add something about cached data below a NXDOMAIN cut?
+  Explaining it is authorized?
+  https://mailarchive.ietf.org/arch/msg/dnsop/k7jhPJ1IyPJEq84CpWxlRMAnfxw
+  </t>
 </section>
 
 <section title="IANA Considerations">
