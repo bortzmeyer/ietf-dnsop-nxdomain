@@ -30,7 +30,7 @@
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.fujiwara-dnsop-nsec-aggressiveuse.xml">
 ]>
 
-<rfc docName="draft-ietf-dnsop-nxdomain-cut-02-BETA"
+<rfc docName="draft-ietf-dnsop-nxdomain-cut-02"
      category="std" ipr="trust200902" updates="1034,2308">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -44,7 +44,7 @@
 <organization>Verisign Labs</organization>
 <address><postal><street>12061 Bluemont Way</street><code>20190</code><city>Reston</city><country>USA</country></postal> <email>shuque@verisign.com</email><uri>http://www.verisignlabs.com/</uri></address>
 </author>
-<date month="TODO" year="2016"/>
+<date month="April" year="2016"/>
 <workgroup>Domain Name System Operations (dnsop) Working Group</workgroup>
 <abstract>
 <t>This document states clearly that when a DNS resolver receives a
@@ -110,12 +110,7 @@ updates both of them.</t>
    <xref target="RFC7719"/>.</t>
    <t>The domain name space is conceptually defined in terms of a tree
 structure. The implementation of a DNS resolver/cache MAY use a tree
-or other data structures. Sometimes, this document mentions tree
-operations, because it is the way domain names are defined, but it
-does not imply that the inner implementation of the server uses a
-   tree.</t>
-   <t>The domain name space is defined in terms of a tree structure.
-And the cache being a subset of the data in the domain name space, it
+or other data structures. The cache being a subset of the data in the domain name space, it
 is much easier to reason about it in terms of that tree structure and to
 describe things in those terms (names under/above, descendent names,
 subtrees etc). In fact, the DNS algorithm description in <xref target="RFC1034"/> even
@@ -256,8 +251,7 @@ this behavior.
 <section anchor="security" title="Security Considerations">
 <t>The technique described here may help against a denial-of-service
 attack named "random qnames" and described in <xref
-target="benefits"/>. Apart from that, it is believed to have no
-security consequences.</t>
+target="benefits"/>.</t>
 <t>If a resolver does not validate the answers with DNSSEC, or if the
 zone is not signed, the resolver can of
 course be poisoned with a false NXDOMAIN, thus "deleting" a part of
