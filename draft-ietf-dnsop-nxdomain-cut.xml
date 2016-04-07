@@ -22,8 +22,8 @@
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6982.xml">
 <!ENTITY rfc7626 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7626.xml">
 <!ENTITY rfc7719 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7719.xml">
-<!ENTITY I-D.ietf-dnsop-qname-minimisation SYSTEM
-"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-qname-minimisation.xml">
+<!ENTITY rfc7816 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.7816.xml">
 <!ENTITY I-D.vixie-dnsext-resimprove SYSTEM
 "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.vixie-dnsext-resimprove.xml">
 <!ENTITY I-D.fujiwara-dnsop-nsec-aggressiveuse SYSTEM
@@ -113,7 +113,18 @@ structure. The implementation of a DNS resolver/cache MAY use a tree
 or other data structures. Sometimes, this document mentions tree
 operations, because it is the way domain names are defined, but it
 does not imply that the inner implementation of the server uses a
-tree.</t>
+   tree.</t>
+   <t>The domain name space is defined in terms of a tree structure.
+And the cache being a subset of the data in the domain name space, it
+is much easier to reason about it in terms of that tree structure and to
+describe things in those terms (names under/above, descendent names,
+subtrees etc). In fact, the DNS algorithm description in <xref target="RFC1034"/> even
+states an assumption that the cache is a tree structure, so the precedent
+is already well established: see its section 4.3.2 which says "The following
+algorithm assumes that the RRs are organized in several tree structures,
+one for each zone, and another for the cache..." So, in this document,
+each time we talk of a tree or tree operations, it refers to the
+model, not to the actual implementation.</t>
       </section>
   </section>
 
@@ -124,11 +135,12 @@ NXDOMAIN, it SHOULD store it in its cache and
 all names and RRsets at or below that node SHOULD then be considered to be
 unreachable. Subsequent queries for such names SHOULD elicit an
 NXDOMAIN response.</t>
-<t>[TODO: currently under discussion, some people find it
-dangerous. Only if the NXDOMAIN is DNSSEC-validated? Perhaps the
-resolver could be configured to not apply this rule to TLDs (or
-root). See <xref target="security"/>.]</t>
-<t>For example, consider two successive queries to a resolver, with a
+<t>But if a resolver has cached data under the NXDOMAIN cut, it
+MAY continue to send it as a reply. (Until the TTL of this cached data expires.)<!-- https://mailarchive.ietf.org/arch/msg/dnsop/k7jhPJ1IyPJEq84CpWxlRMAnfxw --></t>
+<t>Another exception is that a validating resolver MAY decide to implement this behaviour only when the
+NXDOMAIN response has been validated with DNSSEC. See <xref
+target="security"/> for the rationale.</t>
+<t>As an example of the consequence of these rules, consider two successive queries to a resolver, with a
 non-existing domain 'foo.example': the first is for 'foo.example'
 (which results in an NXDOMAIN) and the second for 'bar.foo.example' (which
 also results in an NXDOMAIN).  Many resolvers today will forward both
@@ -164,11 +176,13 @@ stored in the cache is for the denied name, not always for the QNAME.</t>
 <section anchor="benefits" title="Benefits">
   <t>The main benefit is a better efficiency of the caches. In the
   example above, the resolver send only one query instead of two, the second one
-  being answered from the cache.</t>
+  being answered from the cache. This will benefit the entire DNS
+  ecosystem, since the authoritative name servers will have less
+  unnecessary traffic to process.</t>
   <t>The correct behavior (in <xref target="RFC1034"/> and made
   clearer in this document) is specially useful when combined with QNAME
   minimisation <xref
-  target="I-D.ietf-dnsop-qname-minimisation"/> since it will allow a
+  target="RFC7816"/> since it will allow a
   resolver to stop searching as soon as an NXDOMAIN is encountered.</t>
   <t>NXDOMAIN cut may also help mitigate certain types of random QNAME attacks <xref
   target="joost-dnsterror"/> <xref
@@ -233,10 +247,6 @@ this behavior.
   (but, for instance, as a dictionary) and therefore have a 
   reason to ignore the rules of <xref target="rules"/>. So these rules are
   a SHOULD and not a MUST.</t>
-  <t>TODO add something about cached data below a NXDOMAIN cut?
-  Explaining it is authorized?
-  https://mailarchive.ietf.org/arch/msg/dnsop/k7jhPJ1IyPJEq84CpWxlRMAnfxw
-  </t>
 </section>
 
 <section title="IANA Considerations">
@@ -320,8 +330,8 @@ suggestions.</t>
 &rfc4035;
 &rfc6982;
 &rfc7719;
+&rfc7816;
 &I-D.vixie-dnsext-resimprove;
-&I-D.ietf-dnsop-qname-minimisation;
 &I-D.fujiwara-dnsop-nsec-aggressiveuse;
 
 <reference anchor="joost-dnsterror" target="http://www.michael-joost.de/dnsterror.html">
@@ -377,7 +387,7 @@ validation or QNAME minimisation will need to do it, anyway.)</t>
 target="I-D.fujiwara-dnsop-nsec-aggressiveuse"/> describes another way to
 address some of the same concerns (decreasing the traffic for
 non-existing domain names). Unlike NXDOMAIN cut,
-it requires DNSSEC but it is more powerful since it can synthetize
+it requires DNSSEC but it is more powerful since it can synthesize
 NXDOMAINs for domains that were not queried.</t>
 </section>
 
