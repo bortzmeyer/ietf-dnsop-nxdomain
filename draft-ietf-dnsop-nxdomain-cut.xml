@@ -146,7 +146,7 @@ authoritative server.</t>
 <t>If the first request is for 'bar.foo.example' and the second for
 'baz.foo.example', the first NXDOMAIN response won't tell anything
 about 'baz.foo.example' and therefore the second query will be
-transmitted as it was before "NXDOMAIN cut" (see <xref target="future"/>).</t>
+transmitted as it was before the use of "NXDOMAIN cut" optimisation (see <xref target="future"/>).</t>
 <t>These rules replace the second paragraph of section 5 of <xref
 target="RFC2308"/>. Otherwise, this document does not update any other parts of <xref
 target="RFC2308"/>. The fact that a subtree does
@@ -170,7 +170,7 @@ stored in the cache is for the denied name, not always for the QNAME.</t>
 
 <section anchor="benefits" title="Benefits">
   <t>The main benefit is a better efficiency of the caches. In the
-  example above, the resolver send only one query instead of two, the second one
+  example above, the resolver sends only one query instead of two, the second one
   being answered from the cache. This will benefit the entire DNS
   ecosystem, since the authoritative name servers will have less
   unnecessary traffic to process.</t>
@@ -179,7 +179,7 @@ stored in the cache is for the denied name, not always for the QNAME.</t>
   minimisation <xref
   target="RFC7816"/> since it will allow a
   resolver to stop searching as soon as an NXDOMAIN is encountered.</t>
-  <t>NXDOMAIN cut may also help mitigate certain types of random QNAME attacks <xref
+  <t>"NXDOMAIN cut" may also help mitigate certain types of random QNAME attacks <xref
   target="joost-dnsterror"/> <xref
   target="balakrichenan-dafa888"/>, where there is a fixed suffix which
   does not exist. In these attacks against the authoritative name
@@ -187,7 +187,7 @@ stored in the cache is for the denied name, not always for the QNAME.</t>
   of a fixed suffix ("dafa888.wf" in one of the articles above), which is 
   typically nonexistent, and a random prefix, different for each request. A
   resolver receiving these requests have to forward them to the
-  authoritative servers. With NXDOMAIN cut, a system administrator would just have to send
+  authoritative servers. With "NXDOMAIN cut", a system administrator would just have to send
   to the resolver a query for the fixed suffix, the resolver would get
   a NXDOMAIN and then would stop forwarding the queries. (It would be
   better if the SOA record in the NXDOMAIN response were sufficient to
@@ -202,7 +202,7 @@ stored in the cache is for the denied name, not always for the QNAME.</t>
   to name the internal machines of his organization under
   office.foobar.example and uses a trick of his resolver to forward
   requests about this zone to his local authoritative name
-  servers. NXDOMAIN cut would create problems here, since, depending
+  servers. "NXDOMAIN cut" would create problems here, since, depending
   on the order of requests to the resolver, it may have cached the
   non-existence from example and therefore "deleted" everything under. This
   document assumes that such setup is rare and does not need to be supported.</t>
@@ -217,7 +217,7 @@ www.upenn.edu, redirected to www.upenn.edu-dscg.edgesuite.net while a
 query for edu-dscg.edgesuite.net returns NXDOMAIN.</t>
 <t>Such name servers are definitely wrong and have always been. Their
 behaviour is incompatible with DNSSEC. Given
-the advantages of NXDOMAIN cuts, there is little reason to support
+the advantages of "NXDOMAIN cut", there is little reason to support
 this behavior.
 </t>
 </section>
@@ -289,9 +289,9 @@ contains an NXDOMAIN for example.com.</t>
 <t>There are a few exceptions. The Unbound resolver has a
 configuration parameter called <eref
 target="https://www.unbound.net/documentation/unbound.conf.html">"harden-below-nxdomain"
-</eref>, which if set to "yes" turns on NXDOMAIN cut behavior ("only
+</eref>, which if set to "yes" turns on "NXDOMAIN cut" behavior ("only
 DNSSEC-secure nxdomains are used", see <xref target="security"/>). The PowerDNS recursor has optional
-partial support for NXDOMAIN cut, for the root domain only, with its
+partial support for "NXDOMAIN cut", for the root domain only, with its
 "root-nx-trust" setting, <eref
 target="https://doc.powerdns.com/md/recursor/settings/#root-nx-trust">described
 as</eref> "If set, an NXDOMAIN from the root-servers will serve as a
@@ -380,7 +380,7 @@ validation or QNAME minimisation will need to do it, anyway.)</t>
 <t>The document <xref
 target="I-D.fujiwara-dnsop-nsec-aggressiveuse"/> describes another way to
 address some of the same concerns (decreasing the traffic for
-non-existing domain names). Unlike NXDOMAIN cut,
+non-existing domain names). Unlike "NXDOMAIN cut",
 it requires DNSSEC but it is more powerful since it can synthesize
 NXDOMAINs for domains that were not queried.</t>
 </section>
