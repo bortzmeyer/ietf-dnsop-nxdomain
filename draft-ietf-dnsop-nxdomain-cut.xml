@@ -31,7 +31,7 @@
 ]>
 
 <rfc docName="draft-ietf-dnsop-nxdomain-cut-03-BETA"
-     category="std" ipr="trust200902" updates="1034,2308">
+     category="std" ipr="trust200902" updates="1034, 2308">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
 <front>
