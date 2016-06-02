@@ -30,7 +30,7 @@
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.fujiwara-dnsop-nsec-aggressiveuse.xml">
 ]>
 
-<rfc docName="draft-ietf-dnsop-nxdomain-cut-03"
+<rfc docName="draft-ietf-dnsop-nxdomain-cut-04-BETA"
      category="std" ipr="trust200902" updates="1034, 2308">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -44,7 +44,7 @@
 <organization>Verisign Labs</organization>
 <address><postal><street>12061 Bluemont Way</street><code>20190</code><city>Reston</city><country>USA</country></postal> <email>shuque@verisign.com</email><uri>http://www.verisignlabs.com/</uri></address>
 </author>
-<date month="May" year="2016"/>
+<date month="TODO" year="TODO"/>
 <workgroup>Domain Name System Operations (dnsop) Working Group</workgroup>
 <abstract>
 <t>This document states clearly that when a DNS resolver receives a
@@ -56,7 +56,7 @@ source of the document, as well as a list of open issues, is currently
 kept <eref
 target="https://github.com/bortzmeyer/ietf-dnsop-nxdomain">at
 Github</eref>.</t>
-<t>This documents clarifies RFC 1034 and modifies a bit RFC 2308 so it
+<t>This documents clarifies RFC 1034 and modifies RFC 2308 a bit so it
 updates both of them.</t>
 </abstract>
 </front>
@@ -235,7 +235,7 @@ this behavior.
   is, when receiving the NXDOMAIN, to prune the subtree of positive
   cache entries at that node, or to delete all individual cache
   entries for names below that node. Then, when searching downward in
-  its cache, this iterative caching DNS resolver stop searching if it
+  its cache, this iterative caching DNS resolver will stop searching if it
   encounters a cached non-existence.
   </t>
   <t>Some resolver may have a cache which is NOT organized as a tree
