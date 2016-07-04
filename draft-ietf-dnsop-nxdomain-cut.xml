@@ -4,12 +4,16 @@
 <!ENTITY rfc1035 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1035.xml">
 <!ENTITY rfc2119 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY rfc2136 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.2136.xml">
 <!ENTITY rfc2308 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2308.xml">
 <!ENTITY rfc4033 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4033.xml">
 <!ENTITY rfc4035 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4035.xml">
+<!ENTITY rfc4592 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.4592.xml">
 <!ENTITY rfc5246 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5246.xml">
 <!ENTITY rfc5936 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5936.xml">
@@ -44,7 +48,7 @@
 <organization>Verisign Labs</organization>
 <address><postal><street>12061 Bluemont Way</street><code>20190</code><city>Reston</city><country>USA</country></postal> <email>shuque@verisign.com</email><uri>http://www.verisignlabs.com/</uri></address>
 </author>
-<date month="TODO" year="TODO"/>
+<date month="July" year="2016"/>
 <workgroup>Domain Name System Operations (dnsop) Working Group</workgroup>
 <abstract>
 <t>This document states clearly that when a DNS resolver receives a
@@ -123,37 +127,65 @@ model, not to the actual implementation.</t>
       </section>
   </section>
 
-<section anchor="rules" title="Rules">
+<section anchor="updates" title="Updates to RFCs">
+
+<section anchor="updates1024" title="Updates to RFC1034">
+
+<t>
+    This document clarifies possible ambiguities in <xref target="RFC1034"/> 
+    that did not clearly distinguish Empty Non-Terminal names (ENT)  
+    (<xref target="RFC7719"/>) from nonexistent names, and refers to 
+    subsequent documents that do. Empty Non-Terminals are nodes in the DNS
+    that have no resource record sets associated with them, but have descendant
+    nodes that do. The correct response to Empty Non-Terminals is NODATA 
+    (i.e. a response code of NOERROR and an empty ANSWER section). Additional
+    clarifying language on these points is provided in section 7.16 of 
+    <xref target="RFC2136"/> and sections 2.2.2 and 2.2.3 of 
+    <xref target="RFC4592"/>.
+</t>
+
+</section>
+
+<section anchor="updates2308" title="Updates to RFC2308">
+
+<t>The second paragraph of section 5 of <xref target="RFC2308"/>
+states the following: "A negative answer that resulted from a name error 
+(NXDOMAIN) should be cached such that it can be retrieved and returned in 
+response to another query for the same &lt;QNAME, QCLASS&gt; that resulted in the
+cached negative response."
+</t>
+
+<t>This document revises that paragraph to the following: 
+"A negative answer that resulted from a name error (NXDOMAIN) should
+   be cached such that it can be retrieved and returned in response to
+   another query for the same &lt;QNAME, QCLASS&gt; that resulted in the
+   cached negative response, or where QNAME is a descendant of the
+   original QNAME, and QCLASS is the same.
+"
+</t>
+
+<t>The remainder of this section elaborates on the revised rule and
+specifies when it may be reasonable to relax or ignore it.</t>
 
 <t>When an iterative caching DNS resolver receives a response
 NXDOMAIN, it SHOULD store it in its cache and
 all names and RRsets at or below that node SHOULD then be considered to be
 unreachable. Subsequent queries for such names SHOULD elicit an
 NXDOMAIN response.</t>
+
 <t>But if a resolver has cached data under the NXDOMAIN cut, it
 MAY continue to send it as a reply. (Until the TTL of this cached data expires.)<!-- https://mailarchive.ietf.org/arch/msg/dnsop/k7jhPJ1IyPJEq84CpWxlRMAnfxw --></t>
+
 <t>Another exception is that a validating resolver MAY decide to implement this behaviour only when the
 NXDOMAIN response has been validated with DNSSEC. See <xref
 target="security"/> for the rationale.</t>
-<t>As an example of the consequence of these rules, consider two successive queries to a resolver, with a
-non-existing domain 'foo.example': the first is for 'foo.example'
-(which results in an NXDOMAIN) and the second for 'bar.foo.example' (which
-also results in an NXDOMAIN).  Many resolvers today will forward both
-queries, as noticed in <xref target="impl"/>.  However, following the rules in this document ("NXDOMAIN cut"), a resolver would
-cache the first NXDOMAIN response, as a sign of non-existence, and then immediately return
-an NXDOMAIN response for the second query, without transmitting it to an
-authoritative server.</t>
-<t>If the first request is for 'bar.foo.example' and the second for
-'baz.foo.example', the first NXDOMAIN response won't tell anything
-about 'baz.foo.example' and therefore the second query will be
-transmitted as it was before the use of "NXDOMAIN cut" optimisation (see <xref target="future"/>).</t>
-<t>These rules replace the second paragraph of section 5 of <xref
-target="RFC2308"/>. Otherwise, this document does not update any other parts of <xref
-target="RFC2308"/>. The fact that a subtree does
+
+<t>The fact that a subtree does
 not exist is not forever: <xref
 target="RFC2308"/>, section 3, already describes the
 amount of time
 that an NXDOMAIN response may be cached (the "negative TTL").</t>
+
 <t>If the NXDOMAIN response due to a cached non-existence is from a DNSSEC signed zone, then
 it will have accompanying NSEC or NSEC3 records that authenticate the
 non-existence of the name. For a descendant name of the original
@@ -162,10 +194,28 @@ non-existence of the descendant name. The iterative, caching resolver
 MUST return these NSEC or NSEC3 records in the response to the
 triggering query if the query had the DNSSEC OK (DO) bit set.
 </t>
+
 <t>Warning: if there is a chain of
 CNAME (or DNAME), the name which does not exist is the last of the
 chain (<xref target="RFC6604"/>) and not the QNAME. The NXDOMAIN
 stored in the cache is for the denied name, not always for the QNAME.</t>
+
+<t>As an example of the consequence of these rules, consider two successive queries to a resolver, with a
+non-existing domain 'foo.example': the first is for 'foo.example'
+(which results in an NXDOMAIN) and the second for 'bar.foo.example' (which
+also results in an NXDOMAIN).  Many resolvers today will forward both
+queries, as noticed in <xref target="impl"/>.  However, following the rules in this document ("NXDOMAIN cut"), a resolver would
+cache the first NXDOMAIN response, as a sign of non-existence, and then immediately return
+an NXDOMAIN response for the second query, without transmitting it to an
+authoritative server.</t>
+
+<t>If the first request is for 'bar.foo.example' and the second for
+'baz.foo.example', the first NXDOMAIN response won't tell anything
+about 'baz.foo.example' and therefore the second query will be
+transmitted as it was before the use of "NXDOMAIN cut" optimisation (see <xref target="future"/>).</t>
+
+</section>
+
 </section>
 
 <section anchor="benefits" title="Benefits">
@@ -303,9 +353,9 @@ of this is far fewer queries to the root-servers.".</t>
 <t>The main idea is in this document is taken from 
    <xref target="I-D.vixie-dnsext-resimprove"/>, section 3, "Stopping
 Downward Cache Search on NXDOMAIN". Thanks to its authors, Paul Vixie, 
-Rodney Joffe, and Frederico Neves. Additionally Tony Finch, John Levine, 
-Jinmei Tatuya, Bob Harold and Duane Wessels provided valuable feedback and 
-suggestions.</t>
+Rodney Joffe, and Frederico Neves. Additionally Tony Finch, Ted Lemon, 
+John Levine, Jinmei Tatuya, Bob Harold and Duane Wessels provided valuable 
+feedback and suggestions.</t>
 </section>
 
 </middle>
@@ -316,7 +366,9 @@ suggestions.</t>
 &rfc1034;
 &rfc1035;
 &rfc2119;
+&rfc2136;
 &rfc2308;
+&rfc4592;
 &rfc6604;
 </references>
 
@@ -388,6 +440,3 @@ NXDOMAINs for domains that were not queried.</t>
 </back>
 
 </rfc>
-
-
-
