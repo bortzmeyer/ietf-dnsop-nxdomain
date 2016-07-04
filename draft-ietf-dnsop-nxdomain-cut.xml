@@ -281,7 +281,7 @@ this behavior.
   optimisations (such as a tree, augmented by an index of some common
   domain names).</t>
   <t>If a resolver implements its cache as a tree (without any
-  optimisation), one way to follow the rules of <xref target="rules"/>
+  optimisation), one way to follow the rules of <xref target="updates"/>
   is, when receiving the NXDOMAIN, to prune the subtree of positive
   cache entries at that node, or to delete all individual cache
   entries for names below that node. Then, when searching downward in
@@ -290,7 +290,7 @@ this behavior.
   </t>
   <t>Some resolver may have a cache which is NOT organized as a tree
   (but, for instance, as a dictionary) and therefore have a 
-  reason to ignore the rules of <xref target="rules"/>. So these rules are
+  reason to ignore the rules of <xref target="updates"/>. So these rules are
   a SHOULD and not a MUST.</t>
 </section>
 
