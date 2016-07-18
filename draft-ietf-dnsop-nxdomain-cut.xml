@@ -48,7 +48,7 @@
 <organization>Verisign Labs</organization>
 <address><postal><street>12061 Bluemont Way</street><code>20190</code><city>Reston</city><country>USA</country></postal> <email>shuque@verisign.com</email><uri>http://www.verisignlabs.com/</uri></address>
 </author>
-<date month="July" year="2016"/>
+<date month="TODO" year="TODO"/>
 <workgroup>Domain Name System Operations (dnsop) Working Group</workgroup>
 <abstract>
 <t>This document states clearly that when a DNS resolver receives a
@@ -86,7 +86,8 @@ updates both of them.</t>
     is not considered "proof" that there can be no child domains
     underneath. This is due to an ambiguity in <xref
     target="RFC1034"/> that failed to distinguish Empty Non-Terminal
-    names (ENT)  (<xref target="RFC7719"/>) from nonexistent names.
+    names (ENT)  (<xref target="RFC7719"/>) from nonexistent names
+    (<xref target="updates1034"/>).
     The distinction became especially important for the development of DNSSEC,
     which provides proof of non-existence. <xref
     target="RFC4035"/>, section 3.1.3.2, describes
@@ -127,47 +128,8 @@ model, not to the actual implementation.</t>
       </section>
   </section>
 
-<section anchor="updates" title="Updates to RFCs">
-
-<section anchor="updates1024" title="Updates to RFC1034">
-
-<t>
-    This document clarifies possible ambiguities in <xref target="RFC1034"/> 
-    that did not clearly distinguish Empty Non-Terminal names (ENT)  
-    (<xref target="RFC7719"/>) from nonexistent names, and refers to 
-    subsequent documents that do. Empty Non-Terminals are nodes in the DNS
-    that have no resource record sets associated with them, but have descendant
-    nodes that do. The correct response to Empty Non-Terminals is NODATA 
-    (i.e. a response code of NOERROR and an empty ANSWER section). Additional
-    clarifying language on these points is provided in section 7.16 of 
-    <xref target="RFC2136"/> and sections 2.2.2 and 2.2.3 of 
-    <xref target="RFC4592"/>.
-</t>
-
-</section>
-
-<section anchor="updates2308" title="Updates to RFC2308">
-
-<t>The second paragraph of section 5 of <xref target="RFC2308"/>
-states the following: "A negative answer that resulted from a name error 
-(NXDOMAIN) should be cached such that it can be retrieved and returned in 
-response to another query for the same &lt;QNAME, QCLASS&gt; that resulted in the
-cached negative response."
-</t>
-
-<t>This document revises that paragraph to the following: 
-"A negative answer that resulted from a name error (NXDOMAIN) should
-   be cached such that it can be retrieved and returned in response to
-   another query for the same &lt;QNAME, QCLASS&gt; that resulted in the
-   cached negative response, or where QNAME is a descendant of the
-   original QNAME, and QCLASS is the same.
-"
-</t>
-
-<t>The remainder of this section elaborates on the revised rule and
-specifies when it may be reasonable to relax or ignore it.</t>
-
-<t>When an iterative caching DNS resolver receives a response
+  <section anchor="rule" title="Rule">
+    <t>When an iterative caching DNS resolver receives a response
 NXDOMAIN, it SHOULD store it in its cache and
 all names and RRsets at or below that node SHOULD then be considered to be
 unreachable. Subsequent queries for such names SHOULD elicit an
@@ -213,6 +175,46 @@ authoritative server.</t>
 'baz.foo.example', the first NXDOMAIN response won't tell anything
 about 'baz.foo.example' and therefore the second query will be
 transmitted as it was before the use of "NXDOMAIN cut" optimisation (see <xref target="future"/>).</t>
+  </section>
+	  
+<section anchor="updates" title="Updates to RFCs">
+
+<section anchor="updates1034" title="Updates to RFC1034">
+
+<t>
+    This document clarifies possible ambiguities in <xref target="RFC1034"/> 
+    that did not clearly distinguish Empty Non-Terminal names (ENT)  
+    (<xref target="RFC7719"/>) from nonexistent names, and refers to 
+    subsequent documents that do. Empty Non-Terminals are nodes in the DNS
+    that have no resource record sets associated with them, but have descendant
+    nodes that do. The correct response to Empty Non-Terminals is NODATA 
+    (i.e. a response code of NOERROR and an empty ANSWER section). Additional
+    clarifying language on these points is provided in section 7.16 of 
+    <xref target="RFC2136"/> and sections 2.2.2 and 2.2.3 of 
+    <xref target="RFC4592"/>.
+</t>
+
+</section>
+
+<section anchor="updates2308" title="Updates to RFC2308">
+
+<t>The second paragraph of section 5 of <xref target="RFC2308"/>
+states the following: "A negative answer that resulted from a name error 
+(NXDOMAIN) should be cached such that it can be retrieved and returned in 
+response to another query for the same &lt;QNAME, QCLASS&gt; that resulted in the
+cached negative response."
+</t>
+
+<t>This document revises that paragraph to the following: 
+"A negative answer that resulted from a name error (NXDOMAIN) should
+   be cached such that it can be retrieved and returned in response to
+   another query for the same &lt;QNAME, QCLASS&gt; that resulted in the
+   cached negative response, or where QNAME is a descendant of the
+   original QNAME, and QCLASS is the same."
+</t>
+
+<t>The above section <xref target="rule"/> elaborates on the revised rule and
+specifies when it may be reasonable to relax or ignore it.</t>
 
 </section>
 
@@ -281,7 +283,7 @@ this behavior.
   optimisations (such as a tree, augmented by an index of some common
   domain names).</t>
   <t>If a resolver implements its cache as a tree (without any
-  optimisation), one way to follow the rules of <xref target="updates"/>
+  optimisation), one way to follow the rules of <xref target="rule"/>
   is, when receiving the NXDOMAIN, to prune the subtree of positive
   cache entries at that node, or to delete all individual cache
   entries for names below that node. Then, when searching downward in
@@ -290,7 +292,7 @@ this behavior.
   </t>
   <t>Some resolver may have a cache which is NOT organized as a tree
   (but, for instance, as a dictionary) and therefore have a 
-  reason to ignore the rules of <xref target="updates"/>. So these rules are
+  reason to ignore the rules of <xref target="rule"/>. So these rules are
   a SHOULD and not a MUST.</t>
 </section>
 
