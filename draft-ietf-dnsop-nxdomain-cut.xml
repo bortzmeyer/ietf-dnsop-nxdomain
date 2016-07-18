@@ -34,7 +34,7 @@
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.fujiwara-dnsop-nsec-aggressiveuse.xml">
 ]>
 
-<rfc docName="draft-ietf-dnsop-nxdomain-cut-04-BETA"
+<rfc docName="draft-ietf-dnsop-nxdomain-cut-04"
      category="std" ipr="trust200902" updates="1034, 2308">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -48,7 +48,7 @@
 <organization>Verisign Labs</organization>
 <address><postal><street>12061 Bluemont Way</street><code>20190</code><city>Reston</city><country>USA</country></postal> <email>shuque@verisign.com</email><uri>http://www.verisignlabs.com/</uri></address>
 </author>
-<date month="TODO" year="TODO"/>
+<date month="July" year="2016"/>
 <workgroup>Domain Name System Operations (dnsop) Working Group</workgroup>
 <abstract>
 <t>This document states clearly that when a DNS resolver receives a
