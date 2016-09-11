@@ -30,11 +30,11 @@
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7816.xml">
 <!ENTITY I-D.vixie-dnsext-resimprove SYSTEM
 "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.vixie-dnsext-resimprove.xml">
-<!ENTITY I-D.fujiwara-dnsop-nsec-aggressiveuse SYSTEM
-"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.fujiwara-dnsop-nsec-aggressiveuse.xml">
+<!ENTITY I-D.ietf-dnsop-nsec-aggressiveuse SYSTEM
+"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-nsec-aggressiveuse.xml">
 ]>
 
-<rfc docName="draft-ietf-dnsop-nxdomain-cut-04"
+<rfc docName="draft-ietf-dnsop-nxdomain-cut-05-BETA"
      category="std" ipr="trust200902" updates="1034, 2308">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -138,8 +138,10 @@ NXDOMAIN response.</t>
 <t>But if a resolver has cached data under the NXDOMAIN cut, it
 MAY continue to send it as a reply. (Until the TTL of this cached data expires.)<!-- https://mailarchive.ietf.org/arch/msg/dnsop/k7jhPJ1IyPJEq84CpWxlRMAnfxw --></t>
 
-<t>Another exception is that a validating resolver MAY decide to implement this behaviour only when the
-NXDOMAIN response has been validated with DNSSEC. See <xref
+<t>Another exception is that a validating resolver MAY decide to
+implement the "NXDOMAIN cut" behaviour (described in the first
+paragraph of this section) only when the NXDOMAIN response has been
+validated with DNSSEC. See <xref
 target="security"/> for the rationale.</t>
 
 <t>The fact that a subtree does
@@ -380,7 +382,7 @@ feedback and suggestions.</t>
 &rfc7719;
 &rfc7816;
 &I-D.vixie-dnsext-resimprove;
-&I-D.fujiwara-dnsop-nsec-aggressiveuse;
+&I-D.ietf-dnsop-nsec-aggressiveuse;
 
 <reference anchor="joost-dnsterror" target="http://www.michael-joost.de/dnsterror.html">
 <front>
@@ -432,7 +434,7 @@ validation or QNAME minimisation will need to do it, anyway.)</t>
 
 <section title="Related approaches">
 <t>The document <xref
-target="I-D.fujiwara-dnsop-nsec-aggressiveuse"/> describes another way to
+target="I-D.ietf-dnsop-nsec-aggressiveuse"/> describes another way to
 address some of the same concerns (decreasing the traffic for
 non-existing domain names). Unlike "NXDOMAIN cut",
 it requires DNSSEC but it is more powerful since it can synthesize
