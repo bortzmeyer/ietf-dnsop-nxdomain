@@ -60,8 +60,8 @@ source of the document, as well as a list of open issues, is currently
 kept <eref
 target="https://github.com/bortzmeyer/ietf-dnsop-nxdomain">at
 Github</eref>.</t>
-<t>This documents clarifies RFC 1034 and modifies RFC 2308 a bit so it
-updates both of them.</t>
+<t>This documents clarifies RFC 1034 and modifies a portion of RFC
+2308, so it updates both of them.</t>
 </abstract>
 </front>
 
@@ -135,8 +135,13 @@ all names and RRsets at or below that node SHOULD then be considered to be
 unreachable. Subsequent queries for such names SHOULD elicit an
 NXDOMAIN response.</t>
 
-<t>But if a resolver has cached data under the NXDOMAIN cut, it
-MAY continue to send it as a reply. (Until the TTL of this cached data expires.)<!-- https://mailarchive.ietf.org/arch/msg/dnsop/k7jhPJ1IyPJEq84CpWxlRMAnfxw --></t>
+<t>But if a resolver has cached data under the NXDOMAIN cut, it MAY
+continue to send it as a reply (until the TTL of this cached data
+expires), since this may avoid additional processing when a query is
+received. <xref target="impladvice"/> provides more information about
+this.<!-- And see
+https://mailarchive.ietf.org/arch/msg/dnsop/k7jhPJ1IyPJEq84CpWxlRMAnfxw
+--></t>
 
 <t>Another exception is that a validating resolver MAY decide to
 implement the "NXDOMAIN cut" behaviour (described in the first
