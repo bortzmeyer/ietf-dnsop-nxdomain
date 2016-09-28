@@ -102,10 +102,15 @@ Github</eref>.</t>
       of the tree structure: non-existence of a node implies
       non-existence of the entire sub-tree rooted at this node.</t>
       <section title="Terminology">
-<t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+  <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
    document are to be interpreted as described in <xref
    target="RFC2119"/>.</t>
+   <t>"QNAME": it is defined in <xref target="RFC1034"/> and
+   in <xref target="RFC1035"/>, section 4.1.2, but, because <xref
+   target="RFC2308"/> provides a different definition, we repeat the
+   original one here: the QNAME is the owner name of the record in the
+   Question section.</t>
    <t>"Denied name": the domain name whose existence has been denied
    by a response of rcode NXDOMAIN. In most cases, it is the QNAME
    but, because of <xref target="RFC6604"/>, it is not always the
