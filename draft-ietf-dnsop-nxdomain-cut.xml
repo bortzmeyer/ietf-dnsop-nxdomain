@@ -34,7 +34,7 @@
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dnsop-nsec-aggressiveuse.xml">
 ]>
 
-<rfc docName="draft-ietf-dnsop-nxdomain-cut-05-BETA"
+<rfc docName="draft-ietf-dnsop-nxdomain-cut-05"
      category="std" ipr="trust200902" updates="1034, 2308">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -48,7 +48,7 @@
 <organization>Verisign Labs</organization>
 <address><postal><street>12061 Bluemont Way</street><code>20190</code><city>Reston</city><country>USA</country></postal> <email>shuque@verisign.com</email><uri>http://www.verisignlabs.com/</uri></address>
 </author>
-<date month="July" year="2016"/>
+<date month="September" year="2016"/>
 <workgroup>Domain Name System Operations (dnsop) Working Group</workgroup>
 <abstract>
 <t>This document states clearly that when a DNS resolver receives a
@@ -418,14 +418,17 @@ feedback and suggestions.</t>
 
 <section anchor="future" title="Why can't we just use the owner name of the returned SOA?">
   <t>In this document, we deduce the non-existence of a domain only
-  for NXDOMAIN answers where the denied name was this exact domain. If a
-  resolver sends a query to the name servers of the TLD example, and
-  asks the MX record for www.foobar.example, and receives a NXDOMAIN,
+  for NXDOMAIN answers where the denied name was the exact domain. If a
+  resolver sends a query to the name servers of the TLD example,
+  asking for
+  the MX record for www.foobar.example, and subsequently receives a NXDOMAIN,
   it can only register the fact that www.foobar.example (and
-  everything underneath) does not exist. Even if the accompanying SOA
-  record is for example only, one cannot infer that
-  foobar.example is nonexistent. The accompanying SOA indicates the
-  apex of the zone, not the closest existing domain name.</t>
+  everything underneath) does not exist. This is true regardless if the accompanying SOA
+  record is for the domain example only. One cannot infer that
+  foobar.example is nonexistent. The accompanying SOA record indicates the
+  apex of the zone, not the closest existing domain name. So, using
+  the owner name of the SOA record in the Authoritative section to
+  deduce "NXDOMAIN cuts" is currently definitely not OK.</t>
   <t>RFC-EDITOR: REMOVE
   BEFORE PUBLICATION: to use a real example today, ask the
   authoritative name servers of the TLD fr about
