@@ -109,7 +109,7 @@ Github</eref>.</t>
    <t>"QNAME": it is defined in <xref target="RFC1034"/> and
    in <xref target="RFC1035"/>, section 4.1.2, but, because <xref
    target="RFC2308"/> provides a different definition, we repeat the
-   original one here: the QNAME is the owner name of the record in the
+   original one here: the QNAME is the domain name in the
    Question section.</t>
    <t>"Denied name": the domain name whose existence has been denied
    by a response of rcode NXDOMAIN. In most cases, it is the QNAME
